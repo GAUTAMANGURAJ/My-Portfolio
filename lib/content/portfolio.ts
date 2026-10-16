@@ -5,6 +5,9 @@
 
 export type Palette = { from: string; via: string; to: string; accent: string };
 
+/** Keep in sync with `basePath` in next.config.js (GitHub Pages project URL). */
+const BASE_PATH = '/gautam-m-a-portfolio';
+
 export const profile = {
   fullName: 'Gautam M A',
   displayName: 'Gautam M A',
@@ -22,10 +25,10 @@ export const profile = {
     linkedin: 'https://www.linkedin.com/in/gautam-anguraj-9599b2249',
     github: 'https://github.com/GAUTAMANGURAJ/GAUTAMANGURAJ',
   },
-  resumePdf: '/assets/resume/Gautam_MA_Resume.pdf',
+  resumePdf: `${BASE_PATH}/assets/resume/Gautam_MA_Resume.pdf`,
   portrait: {
-    src: '/assets/portrait-hero.jpg',
-    srcSet: '/assets/portrait-hero.jpg 768w',
+    src: `${BASE_PATH}/assets/portrait-hero.jpg`,
+    srcSet: `${BASE_PATH}/assets/portrait-hero.jpg 768w`,
     alt: 'Portrait of Gautam M A, frontend engineer',
   },
   interests: ['Frontend architecture', 'Reusable systems', 'Full-stack growth', 'AI-assisted engineering'],
