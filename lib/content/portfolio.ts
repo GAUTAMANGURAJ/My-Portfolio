@@ -1,5 +1,5 @@
 /**
- * Central portfolio data — Gautam M A / INTERFACE ORIGINALS.
+ * Central portfolio data — Gautam M A.
  * Every fact on the site should come from this file.
  */
 
@@ -12,13 +12,13 @@ export const profile = {
   fullName: 'Gautam M A',
   displayName: 'Gautam M A',
   firstName: 'GAUTAM',
-  seriesTag: 'INTERFACE ORIGINALS',
-  /** Studio card shown at the start of the opening sequence. */
-  originalLabel: 'A GAUTAM ORIGINAL',
-  role: 'Frontend Engineer',
-  tagline: ['Frontend Engineer', 'React', 'Next.js'],
+  seriesTag: 'FRONTEND SYSTEMS',
+  /** Label used in opening / studio moments. */
+  originalLabel: 'BLUEPRINT → REALITY',
+  role: 'Software Engineer',
+  tagline: ['Software Engineer', 'Frontend Systems', 'React · Next.js'],
   intro:
-    'Frontend engineer at Pirai Infotech building responsive, maintainable enterprise web applications with React, Next.js, and TypeScript — expanding into Python and FastAPI.',
+    'Software Engineer at Pirai Infotech with primary ownership on frontend systems — building responsive, maintainable enterprise web applications with React, Next.js, and TypeScript, and expanding into Python and FastAPI.',
   location: 'Coimbatore / Pollachi, India',
   email: 'gautamanguraj16@gmail.com',
   links: {
@@ -29,7 +29,7 @@ export const profile = {
   portrait: {
     src: `${BASE_PATH}/assets/portrait-hero.jpg`,
     srcSet: `${BASE_PATH}/assets/portrait-hero.jpg 768w`,
-    alt: 'Portrait of Gautam M A, frontend engineer',
+    alt: 'Portrait of Gautam M A, software engineer',
   },
   interests: ['Frontend architecture', 'Reusable systems', 'Full-stack growth', 'AI-assisted engineering'],
 };
@@ -58,8 +58,8 @@ export const experience = [
     place: 'Pollachi, India',
     period: 'April 2025 – Present',
     points: [
-      'Frontend ownership across enterprise platforms including Zice ESG and RoboLab (backoffice + client portal).',
-      'Independently delivered Contract Management System and IVBM / EasytoAudit static website.',
+      'Frontend ownership across enterprise platforms — an ESG intelligence suite and a robotic-arm operations SaaS (backoffice + client portal).',
+      'Independently delivered a Contract Management System and a financial-accounts marketing website (static Next.js).',
       'Led significant work on an internal frontend requirements-to-code orchestration pipeline (216-file reusable library).',
       'Resolved 87 of 90 high- and highest-severity defects; recognized as Budding Star of the Year 2025–2026.',
     ],
@@ -92,15 +92,15 @@ const jade: Palette = { from: '#03150f', via: '#0d5a40', to: '#050a08', accent: 
 
 export const projects: Project[] = [
   {
-    id: 'robolab',
-    title: 'RoboLab Platform',
+    id: 'robotic-arm',
+    title: 'Robotic Arm Operations Platform',
     year: '2026',
-    genre: 'Enterprise · Backoffice & Client Portal',
+    genre: 'SaaS · Robo-arm handling · Backoffice & Client Portal',
     logline:
-      'Sole frontend ownership of two connected experiences — internal backoffice and client-facing portal — shipped in the planned launch window.',
+      'Sole frontend ownership of two connected experiences — internal backoffice and client-facing portal for robotic-arm operations — shipped in the planned launch window.',
     stack: ['React', 'TypeScript', 'RBAC', 'REST APIs'],
     build: [
-      'Became the sole frontend developer responsible for the internal Backoffice and the client-facing portal.',
+      'Became the sole frontend developer responsible for the internal backoffice and the client-facing portal.',
       'Delivered both applications within the planned launch window, with zero rejected pull requests and no post-launch production incidents.',
       'Implemented role-based access control, JWT-protected routes, session and expiry handling, multi-step configuration workflows, and reusable UI/API modules.',
       'Continued managing post-release enhancements and support for production applications.',
@@ -122,8 +122,8 @@ export const projects: Project[] = [
     motif: 'orbit',
   },
   {
-    id: 'zice-esg',
-    title: 'Zice ESG Platform',
+    id: 'esg-platform',
+    title: 'ESG Intelligence Platform',
     year: '2025',
     genre: 'Enterprise SaaS · ESG Configuration & Reporting',
     logline:
@@ -176,15 +176,15 @@ export const projects: Project[] = [
     motif: 'stamp',
   },
   {
-    id: 'easytoaudit',
-    title: 'IVBM / EasytoAudit',
+    id: 'financial-accounts',
+    title: 'Financial Accounts Website',
     year: '2025',
-    genre: 'Static Website · Next.js',
+    genre: 'Static Website · Next.js · Financial accounts',
     logline:
-      'Self-learned Next.js and shipped a responsive static marketing site with reusable components — delivered on timeline with stakeholder appreciation.',
+      'Self-learned Next.js and shipped a responsive static site for a financial-accounts product — reusable components, delivered on timeline with stakeholder appreciation.',
     stack: ['Next.js', 'Reusable UI', 'Responsive'],
     build: [
-      'Independently delivered a complete static website implementation.',
+      'Independently delivered a complete static website implementation for financial-accounts messaging and product presence.',
       'Emphasis on clean structure, responsive behavior, and consistent reusable interface patterns.',
     ],
     features: [
@@ -195,7 +195,7 @@ export const projects: Project[] = [
     ],
     metrics: [
       { value: 'Next.js', label: 'self-learned & shipped' },
-      { value: 'Static', label: 'marketing website' },
+      { value: 'Static', label: 'product website' },
     ],
     palette: jade,
     motif: 'static',
@@ -219,10 +219,10 @@ export const achievements: Achievement[] = [
     laurel: '2025 – 2026',
   },
   {
-    id: 'robolab-launch',
-    title: 'RoboLab Launch',
+    id: 'robotic-arm-launch',
+    title: 'Platform Launch',
     org: 'Pirai Infotech',
-    detail: 'Sole frontend owner for backoffice and client portal — zero rejected PRs, no post-launch production incidents.',
+    detail: 'Sole frontend owner for robotic-arm operations backoffice and client portal — zero rejected PRs, no post-launch production incidents.',
     laurel: 'Production',
   },
   {
@@ -322,12 +322,12 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 export const skillEvidence: Record<string, string[]> = {
-  React: ['RoboLab Platform', 'Zice ESG Platform', 'Contract Management System'],
-  'Next.js': ['IVBM / EasytoAudit'],
-  TypeScript: ['RoboLab Platform', 'Zice ESG Platform'],
-  RBAC: ['RoboLab Platform', 'Contract Management System'],
-  'REST APIs': ['RoboLab Platform', 'Zice ESG Platform', 'Contract Management System'],
-  'JWT Auth': ['RoboLab Platform', 'Zice ESG Platform'],
+  React: ['Robotic Arm Operations Platform', 'ESG Intelligence Platform', 'Contract Management System'],
+  'Next.js': ['Financial Accounts Website'],
+  TypeScript: ['Robotic Arm Operations Platform', 'ESG Intelligence Platform'],
+  RBAC: ['Robotic Arm Operations Platform', 'Contract Management System'],
+  'REST APIs': ['Robotic Arm Operations Platform', 'ESG Intelligence Platform', 'Contract Management System'],
+  'JWT Auth': ['Robotic Arm Operations Platform', 'ESG Intelligence Platform'],
   Python: ['Cisco Python Essentials 1', 'Backend growth path'],
   FastAPI: ['Current full-stack direction'],
 };
@@ -406,16 +406,16 @@ export const seasons: Season[] = [
         code: 'S02 E02',
         title: 'Static, Shipped',
         description:
-          'Self-learned Next.js and delivered the IVBM / EasytoAudit responsive static website on timeline with stakeholder appreciation.',
+          'Self-learned Next.js and delivered a responsive financial-accounts static website on timeline with stakeholder appreciation.',
         tags: ['Next.js', 'Static'],
         runtime: '2025',
         palette: jade,
       },
       {
         code: 'S02 E03',
-        title: 'Zice Ownership',
+        title: 'ESG Ownership',
         description:
-          'Took frontend ownership of Zice ESG — authentication, indicators, materiality, reporting, subscriptions — plus CR phase, UAT, and docs.',
+          'Took frontend ownership of an ESG intelligence platform — authentication, indicators, materiality, reporting, subscriptions — plus CR phase, UAT, and docs.',
         tags: ['ESG', 'Enterprise', 'UAT'],
         runtime: '2025 – 2026',
         palette: ocean,
@@ -425,7 +425,7 @@ export const seasons: Season[] = [
         title: 'Quality Arc',
         description: 'Resolved 87 of 90 high- and highest-severity defects and helped drive major feature epics toward completion.',
         tags: ['87/90', 'Quality'],
-        runtime: 'Zice',
+        runtime: 'ESG',
         palette: signal,
       },
     ],
@@ -434,14 +434,14 @@ export const seasons: Season[] = [
     number: 3,
     title: 'Complete Frontend Ownership',
     period: 'April 2026 – Present',
-    synopsis: 'Sole frontend developer for RoboLab — backoffice and client portal, production-ready.',
+    synopsis: 'Sole frontend developer for a robotic-arm operations SaaS — backoffice and client portal, production-ready.',
     episodes: [
       {
         code: 'S03 E01',
         title: 'Two Applications',
         description:
-          'Owned both the internal Backoffice and the client-facing portal — RBAC, JWT routes, sessions, multi-step workflows, shared modules.',
-        tags: ['RoboLab', 'RBAC', 'JWT'],
+          'Owned both the internal backoffice and the client-facing portal — RBAC, JWT routes, sessions, multi-step workflows, shared modules.',
+        tags: ['Robotics SaaS', 'RBAC', 'JWT'],
         runtime: '2026',
         palette: signal,
       },
@@ -516,14 +516,14 @@ export type TopPick = { label: string; title: string; detail: string; palette: P
 
 export const topPicks: TopPick[] = [
   { label: 'Primary craft', title: 'React + TypeScript', detail: 'Enterprise frontend ownership', palette: signal },
-  { label: 'Flagship Original', title: 'RoboLab', detail: 'Sole FE · 2 apps · clean launch', palette: ocean },
-  { label: 'Enterprise depth', title: 'Zice ESG', detail: '87/90 severity defects resolved', palette: amber },
+  { label: 'Flagship work', title: 'Robotics SaaS', detail: 'Sole FE · 2 apps · clean launch', palette: ocean },
+  { label: 'Enterprise depth', title: 'ESG Platform', detail: '87/90 severity defects resolved', palette: amber },
   { label: 'Team multiplier', title: 'Orchestration', detail: '216-file reusable library', palette: violet },
   { label: 'Recognition', title: 'Budding Star', detail: 'Pirai Infotech 2025–2026', palette: jade },
   { label: 'First module', title: 'Contracts', detail: 'Independent CRUD + approvals + RBAC', palette: amber },
-  { label: 'Static ship', title: 'EasytoAudit', detail: 'Next.js static site on timeline', palette: jade },
+  { label: 'Static ship', title: 'Accounts Site', detail: 'Next.js static site on timeline', palette: jade },
   { label: 'Growing stack', title: 'Python / FastAPI', detail: 'Full-stack direction', palette: ocean },
-  { label: 'Quality bar', title: '0 incidents', detail: 'RoboLab post-launch production', palette: signal },
+  { label: 'Quality bar', title: '0 incidents', detail: 'Post-launch production stability', palette: signal },
   { label: 'Current mission', title: 'Product Engineer', detail: 'Frontend architecture → full lifecycle', palette: violet },
 ];
 
@@ -532,19 +532,19 @@ export type IntroSlide = { kicker: string; title: string; lines: string[]; chips
 export const introSlides: IntroSlide[] = [
   {
     kicker: 'Role',
-    title: 'Frontend Engineer',
-    lines: ['Pirai Infotech · Pollachi / Coimbatore', 'React · Next.js · TypeScript'],
-    chips: ['Available for thoughtful frontend work'],
+    title: 'Software Engineer',
+    lines: ['Pirai Infotech · Frontend systems ownership', 'React · Next.js · TypeScript'],
+    chips: ['Available for thoughtful product work'],
   },
   {
-    kicker: 'Original',
-    title: 'RoboLab',
+    kicker: 'Work',
+    title: 'Robotics SaaS',
     lines: ['Sole frontend owner · backoffice + client portal', 'Zero rejected PRs · no post-launch incidents'],
     chips: ['RBAC', 'JWT', 'React'],
   },
   {
-    kicker: 'Original',
-    title: 'Zice ESG',
+    kicker: 'Work',
+    title: 'ESG Platform',
     lines: ['Enterprise ESG modules end-to-end', '87 of 90 high-severity defects resolved'],
     chips: ['SaaS', 'Enterprise UI'],
   },
@@ -578,7 +578,7 @@ export const viewerProfiles: {
   {
     id: 'gautam',
     name: 'Gautam',
-    blurb: 'The full series, in order',
+    blurb: 'Full overview, in order',
     color: '#2dd4bf',
     order: ['about', 'journey', 'originals', 'picks', 'skills', 'moments', 'story'],
   },
@@ -599,30 +599,30 @@ export const viewerProfiles: {
   {
     id: 'creative',
     name: 'Creative',
-    blurb: 'The story arc & highlights first',
+    blurb: 'Journey & highlights first',
     color: '#d4a574',
     order: ['journey', 'picks', 'originals', 'moments', 'about', 'skills', 'story'],
   },
 ];
 
 export const sectionMeta: Record<SectionId, { nav: string; card: string; meta: string; palette: Palette }> = {
-  about: { nav: 'About', card: 'About Me', meta: 'The Pilot • Education & role', palette: violet },
+  about: { nav: 'About', card: 'About Me', meta: 'Education & role', palette: violet },
   journey: {
     nav: 'Journey',
     card: 'My Journey',
-    meta: `${seasons.length} Seasons • ${seasons.reduce((n, s) => n + s.episodes.length, 0)} Episodes`,
+    meta: `${seasons.length} chapters · ${seasons.reduce((n, s) => n + s.episodes.length, 0)} milestones`,
     palette: amber,
   },
-  originals: { nav: 'Originals', card: 'My Projects', meta: `${projects.length} Originals • Enterprise & web`, palette: signal },
-  picks: { nav: 'Top Picks', card: 'Top Picks', meta: 'Top 10 from the series', palette: jade },
+  originals: { nav: 'Work', card: 'Selected Work', meta: `${projects.length} projects · Enterprise & web`, palette: signal },
+  picks: { nav: 'Highlights', card: 'Highlights', meta: 'Top signals from the work', palette: jade },
   skills: { nav: 'Skills', card: 'My Skills', meta: `${skillCategories.length} Categories`, palette: ocean },
   moments: {
-    nav: 'Moments',
-    card: 'My Achievements',
-    meta: `${achievements.length} Moments • ${certifications.length} Certifications`,
+    nav: 'Impact',
+    card: 'Achievements',
+    meta: `${achievements.length} achievements · ${certifications.length} certifications`,
     palette: amber,
   },
-  story: { nav: 'Resume', card: 'The Full Story', meta: 'Resume • View & download', palette: violet },
+  story: { nav: 'Resume', card: 'Resume', meta: 'Resume · View & download', palette: violet },
 };
 
 export const storyBlurb =

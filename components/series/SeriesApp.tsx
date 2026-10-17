@@ -77,7 +77,7 @@ function Series() {
         setStage('home');
       } else {
         const p = viewerProfiles.find((v) => v.id === id)!;
-        setToast(`Now watching as ${p.name} — ${p.blurb.toLowerCase()}`);
+        setToast(`Viewing as ${p.name} — ${p.blurb.toLowerCase()}`);
         scrollTo(0, { offset: 0, duration: 1.2 });
       }
     },
@@ -113,10 +113,11 @@ function Series() {
       </AnimatePresence>
 
       {stage === 'home' && (
+        // Opacity-only: scale/filter on this wrapper breaks position:fixed for the navbar
         <motion.div
-          initial={{ opacity: 0, scale: 1.03, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 1, ease: EASE }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.85, ease: EASE }}
         >
           <SeriesHome
             profileId={profileId}

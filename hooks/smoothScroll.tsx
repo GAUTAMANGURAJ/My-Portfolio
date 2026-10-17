@@ -28,11 +28,12 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     if (reduced) return;
 
     const lenis = new Lenis({
-      duration: 1.55,
+      duration: 1.7,
       smoothWheel: true,
-      wheelMultiplier: 0.85,
-      touchMultiplier: 1.35,
-      syncTouch: true,
+      wheelMultiplier: 0.8,
+      touchMultiplier: 1.2,
+      // Keep native touch for horizontal rails; Lenis still smooths vertical page scroll
+      syncTouch: false,
       easing: (t) => 1 - Math.pow(1 - t, 4),
     });
     lenisRef.current = lenis;

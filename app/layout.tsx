@@ -22,13 +22,13 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: 'Gautam — Interface Originals',
+  title: 'Gautam M A — Software Engineer',
   description:
-    'Gautam M A — Frontend Engineer. Interface Originals: enterprise platforms, ownership, and craft.',
+    'Gautam M A — Software Engineer focused on frontend systems. Enterprise platforms, ownership, and craft with React, Next.js, and TypeScript.',
   themeColor: '#060910',
   openGraph: {
-    title: 'Gautam — Interface Originals',
-    description: 'Frontend Engineer · React · Next.js. Enterprise platforms, ownership, and craft.',
+    title: 'Gautam M A — Software Engineer',
+    description: 'Software Engineer · Frontend Systems · React · Next.js. Enterprise platforms, ownership, and craft.',
     type: 'website',
   },
 };

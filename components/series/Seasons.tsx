@@ -15,14 +15,18 @@ export default function Seasons() {
   return (
     <>
       <SectionHeading
-        kicker={`${seasons.length} Seasons`}
+        kicker={`${seasons.length} chapters`}
         title="My Journey"
-        aside={<p className="max-w-xs text-sm text-mist">Every stage of the career, told as a season — select one to see its episodes.</p>}
+        aside={
+          <p className="max-w-xs text-sm text-mist">
+            Every stage of the career as a chapter — select one to explore its milestones.
+          </p>
+        }
       />
 
-      <div className="rail gutter mb-8 flex gap-2 overflow-x-auto" role="tablist" aria-label="Seasons">
+      <div className="rail gutter mb-8 flex gap-2 overflow-x-auto touch-pan-x" role="tablist" aria-label="Journey chapters">
         {seasons.map((s, i) => (
-          <button
+          <motion.button
             key={s.number}
             role="tab"
             aria-selected={i === active}
@@ -32,35 +36,51 @@ export default function Seasons() {
               rail.current?.scrollTo({ left: 0, behavior: 'smooth' });
             }}
             className={`relative shrink-0 rounded-full px-4 py-2.5 text-left transition ${i === active ? 'text-ink' : 'text-mist hover:text-bone'}`}
+            whileTap={{ scale: 0.97 }}
           >
-            {i === active && <motion.span layoutId="season-pill" className="absolute inset-0 rounded-full bg-bone" transition={{ duration: 0.5, ease: EASE }} />}
-            <span className="relative block text-[10px] font-bold tracking-[0.24em]">SEASON {String(s.number).padStart(2, '0')}</span>
+            {i === active && (
+              <motion.span layoutId="season-pill" className="absolute inset-0 rounded-full bg-bone" transition={{ duration: 0.5, ease: EASE }} />
+            )}
+            <span className="relative block text-[10px] font-bold tracking-[0.24em]">
+              CHAPTER {String(s.number).padStart(2, '0')}
+            </span>
             <span className="relative block whitespace-nowrap text-sm font-semibold">{s.title}</span>
-          </button>
+          </motion.button>
         ))}
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={season.number}
-          initial={{ opacity: 0, x: 40, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, x: -40, filter: 'blur(8px)' }}
+          initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
           transition={{ duration: 0.55, ease: EASE }}
         >
           <div className="gutter mb-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <h3 className="font-display text-4xl tracking-wide text-bone sm:text-5xl">
-              <span className="text-outline mr-3">S{String(season.number).padStart(2, '0')}</span>
+              <span className="text-outline mr-3">CH{String(season.number).padStart(2, '0')}</span>
               {season.title}
             </h3>
             <span className="text-sm text-mist">
-              {season.period} · {season.episodes.length} {season.episodes.length === 1 ? 'Episode' : 'Episodes'}
+              {season.period} · {season.episodes.length}{' '}
+              {season.episodes.length === 1 ? 'milestone' : 'milestones'}
             </span>
           </div>
-          <p className="gutter max-w-3xl text-[15px] leading-relaxed text-bone/75">{season.synopsis}</p>
+          <motion.p
+            className="gutter max-w-3xl text-[15px] leading-relaxed text-bone/75"
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
+          >
+            {season.synopsis}
+          </motion.p>
 
           <div className="group/rail relative">
-            <div ref={rail} className="rail gutter flex snap-x snap-mandatory gap-4 overflow-x-auto py-8 [perspective:1200px]">
+            <div
+              ref={rail}
+              className="rail gutter flex snap-x snap-mandatory gap-4 overflow-x-auto py-8 touch-pan-x [perspective:1200px]"
+            >
               {season.episodes.map((e, i) => (
                 <EpisodeCard key={e.code} episode={e} index={i} />
               ))}

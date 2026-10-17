@@ -51,7 +51,7 @@ export default function ResumeViewer({ onView }: { onView: () => void }) {
           </div>
           <dl className="mt-8 grid grid-cols-3 gap-px overflow-hidden rounded-xl bg-white/10 text-center">
             {[
-              { v: String(projects.length), k: 'Originals' },
+              { v: String(projects.length), k: 'Projects' },
               { v: String(achievements.length), k: 'Moments' },
               { v: String(certifications.length), k: 'Certs' },
             ].map((s) => (

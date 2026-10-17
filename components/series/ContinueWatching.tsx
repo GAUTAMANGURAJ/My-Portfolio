@@ -23,7 +23,7 @@ export default function ContinueWatching({ order }: { order: SectionId[] }) {
     <section aria-labelledby="continue-title" className="relative z-10 -mt-10 pb-10 sm:-mt-16">
       <div className="gutter mb-4 flex items-end justify-between">
         <RevealText as="h2" text="Continue Exploring" className="font-sans text-lg font-semibold tracking-tight text-bone sm:text-2xl" />
-        <span className="hidden text-xs text-smoke sm:block">Progress shows what you&apos;ve watched so far</span>
+        <span className="hidden text-xs text-smoke sm:block">Progress shows how far you&apos;ve scrolled</span>
       </div>
       <div className="group/rail relative">
         <div ref={rail} className="rail gutter flex snap-x snap-mandatory gap-3 overflow-x-auto py-8 sm:gap-4" data-cursor={fine ? undefined : 'drag'}>
@@ -55,7 +55,7 @@ export default function ContinueWatching({ order }: { order: SectionId[] }) {
                     </PosterBackdrop>
                   </motion.div>
                   <div className="absolute inset-0 flex flex-col justify-end p-4">
-                    <span className="mb-1 text-[10px] font-bold uppercase tracking-[0.3em] text-signal">Episode {String(i + 1).padStart(2, '0')}</span>
+                    <span className="mb-1 text-[10px] font-bold uppercase tracking-[0.3em] text-signal">Section {String(i + 1).padStart(2, '0')}</span>
                     <span className="font-display text-2xl leading-none tracking-wide text-bone transition-transform duration-500 group-hover:-translate-y-1 sm:text-3xl">
                       {meta.card}
                     </span>

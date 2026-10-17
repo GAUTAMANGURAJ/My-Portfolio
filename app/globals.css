@@ -124,9 +124,46 @@ body {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+  touch-action: pan-x pinch-zoom;
+  scroll-snap-type: x mandatory;
 }
 .rail::-webkit-scrollbar {
   display: none;
+}
+
+.contact-panel {
+  background-image: linear-gradient(160deg, rgba(45, 212, 191, 0.06), transparent 40%, rgba(212, 165, 116, 0.04));
+}
+
+.field-input {
+  width: 100%;
+  min-height: 3.25rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(232, 238, 248, 0.12);
+  background: rgba(6, 9, 16, 0.65);
+  padding: 1rem 1.15rem;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--color-bone);
+  outline: none;
+  transition:
+    border-color 0.3s var(--ease-cine),
+    box-shadow 0.3s var(--ease-cine),
+    background 0.3s var(--ease-cine),
+    transform 0.3s var(--ease-cine);
+}
+.field-input::placeholder {
+  color: var(--color-smoke);
+}
+.field-input:hover {
+  border-color: rgba(232, 238, 248, 0.22);
+  background: rgba(12, 18, 32, 0.85);
+}
+.field-input:focus {
+  border-color: rgba(45, 212, 191, 0.65);
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.14), 0 12px 40px rgba(0, 0, 0, 0.25);
+  background: rgba(12, 18, 32, 0.95);
+  transform: translateY(-1px);
 }
 
 /* Custom cursor: hide the native one only when ours is active */

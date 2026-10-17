@@ -15,8 +15,8 @@ export default function Skills() {
   return (
     <>
       <SectionHeading
-        kicker="Genres"
-        title="My Skill Universe"
+        kicker="Capabilities"
+        title="Skill Stack"
         aside={<p className="max-w-xs text-sm text-mist">Hover or tap a skill to see where it shows up across projects and certifications.</p>}
       />
 

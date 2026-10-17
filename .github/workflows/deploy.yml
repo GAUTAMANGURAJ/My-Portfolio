@@ -33,6 +33,8 @@ jobs:
         run: npm ci
 
       - name: Build static website
+        env:
+          NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY: ${{ secrets.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY }}
         run: npm run build
 
       - name: Verify static export

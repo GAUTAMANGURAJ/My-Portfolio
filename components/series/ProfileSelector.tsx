@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { profile, viewerProfiles, type ProfileId } from '@/lib/content/portfolio';
-import { EASE } from './fx';
+import { profile, sectionMeta, viewerProfiles, type ProfileId } from '@/lib/content/portfolio';
+import { useFinePointer, useReducedMotionPref } from '@/hooks/useMedia';
+import { EASE, Magnetic } from './fx';
 
 export function ProfileAvatar({ id, size = 'lg' }: { id: ProfileId; size?: 'sm' | 'lg' }) {
   const p = viewerProfiles.find((v) => v.id === id)!;
@@ -35,83 +36,185 @@ export function ProfileAvatar({ id, size = 'lg' }: { id: ProfileId; size?: 'sm' 
 }
 
 export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) => void }) {
+  const fine = useFinePointer();
+  const reduced = useReducedMotionPref();
+  const [locked, setLocked] = useState<ProfileId | null>(null);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onPick('gautam');
+      if (e.key === 'Escape' && !locked) onPick('gautam');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onPick]);
+  }, [onPick, locked]);
+
+  const select = (id: ProfileId) => {
+    if (locked) return;
+    setLocked(id);
+    window.setTimeout(() => onPick(id), reduced ? 120 : 520);
+  };
 
   return (
     <motion.div
       className="fixed inset-0 z-[110] flex flex-col items-center justify-center overflow-y-auto bg-ink px-4 py-16"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.06, filter: 'blur(10px)' }}
-      transition={{ duration: 0.7, ease: EASE }}
+      initial={{ opacity: 0, scale: 1.03, filter: 'blur(12px)' }}
+      animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, scale: 1.04, filter: 'blur(12px)' }}
+      transition={{ duration: 0.75, ease: EASE }}
       role="dialog"
-      aria-label="Choose your viewing profile"
+      aria-label="Choose how to enter the portfolio"
     >
-      <div
+      {/* Blueprint handoff atmosphere */}
+      <motion.div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(55%_45%_at_50%_0%,rgba(45,212,191,0.12),transparent_70%)]"
-      />
-      <motion.p
-        className="relative mb-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-gold"
+        className="pointer-events-none absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.9 }}
+        style={{
+          background:
+            'radial-gradient(55% 40% at 50% 0%, rgba(45,212,191,0.14), transparent 70%), radial-gradient(40% 35% at 80% 80%, rgba(212,165,116,0.08), transparent 60%)',
+        }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.08]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(45,212,191,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.35) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.1 }}
+        transition={{ duration: 1 }}
+      />
+
+      <motion.p
+        className="relative mb-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-gold"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: EASE }}
       >
-        Interface Originals
+        Frontend systems
       </motion.p>
       <motion.h2
-        className="relative mb-10 text-center font-display text-4xl font-bold tracking-tight text-bone sm:text-5xl"
-        initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+        className="relative mb-3 text-center font-display text-4xl font-bold tracking-tight text-bone sm:text-5xl"
+        initial={{ opacity: 0, y: 22, filter: 'blur(8px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8, ease: EASE }}
+        transition={{ duration: 0.75, ease: EASE, delay: 0.05 }}
       >
-        Choose your lens
+        Choose your path
       </motion.h2>
+      <motion.p
+        className="relative mb-10 max-w-sm text-center text-sm text-mist"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.15 }}
+      >
+        Same work — different entry point.
+      </motion.p>
+
       <motion.ul
-        className="relative grid grid-cols-2 gap-6 sm:flex sm:gap-8"
+        className="relative grid grid-cols-2 gap-5 sm:flex sm:gap-8"
         initial="hidden"
         animate="show"
-        transition={{ staggerChildren: 0.08, delayChildren: 0.2 }}
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.1, delayChildren: 0.22 } },
+        }}
       >
-        {viewerProfiles.map((p) => (
-          <motion.li
-            key={p.id}
-            variants={{
-              hidden: { opacity: 0, y: 24 },
-              show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => onPick(p.id)}
-              data-cursor="play"
-              className="group flex flex-col items-center gap-3 text-center"
+        {viewerProfiles.map((p) => {
+          const startsAt = sectionMeta[p.order[0]].nav;
+          const isLocked = locked === p.id;
+          const dimmed = locked !== null && !isLocked;
+
+          return (
+            <motion.li
+              key={p.id}
+              variants={{
+                hidden: { opacity: 0, y: 28, scale: 0.92, filter: 'blur(8px)' },
+                show: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  transition: { duration: 0.65, ease: EASE },
+                },
+              }}
+              animate={
+                isLocked
+                  ? { scale: 1.06, opacity: 1 }
+                  : dimmed
+                    ? { opacity: 0.28, scale: 0.96, filter: 'blur(2px)' }
+                    : undefined
+              }
+              transition={{ duration: 0.45, ease: EASE }}
             >
-              <span className="relative rounded-2xl ring-2 ring-transparent transition duration-300 group-hover:scale-105 group-hover:ring-signal/70 group-focus-visible:ring-signal">
-                <ProfileAvatar id={p.id} />
-                {p.id === 'gautam' && (
-                  <span className="absolute -right-2 -top-2 rounded-full bg-gold px-2 py-0.5 text-[9px] font-bold tracking-[0.14em] text-ink">
-                    MAIN
+              <Magnetic strength={fine && !reduced ? 0.22 : 0}>
+                <button
+                  type="button"
+                  onClick={() => select(p.id)}
+                  disabled={locked !== null}
+                  data-cursor="play"
+                  className="group flex min-h-[44px] flex-col items-center gap-3 text-center disabled:cursor-default"
+                  aria-label={`${p.name}. ${p.blurb}. Starts at ${startsAt}.`}
+                >
+                  <motion.span
+                    className="relative rounded-2xl ring-2 ring-transparent transition duration-300 group-hover:ring-signal/70 group-focus-visible:ring-signal group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-ink"
+                    whileHover={fine && !locked ? { scale: 1.05, y: -4 } : undefined}
+                    whileTap={!locked ? { scale: 0.97 } : undefined}
+                    animate={
+                      isLocked
+                        ? {
+                            scale: [1, 1.08, 1.04],
+                            boxShadow: [
+                              '0 0 0 0 rgba(45,212,191,0)',
+                              '0 0 36px 4px rgba(45,212,191,0.35)',
+                              '0 0 28px 2px rgba(45,212,191,0.25)',
+                            ],
+                          }
+                        : {}
+                    }
+                    transition={{ duration: 0.5, ease: EASE }}
+                  >
+                    <ProfileAvatar id={p.id} />
+                    {p.id === 'gautam' && (
+                      <span className="absolute -right-2 -top-2 rounded-full bg-gold px-2 py-0.5 text-[9px] font-bold tracking-[0.14em] text-ink">
+                        FULL
+                      </span>
+                    )}
+                    {isLocked && (
+                      <motion.span
+                        aria-hidden
+                        className="absolute inset-0 rounded-2xl border-2 border-signal"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      />
+                    )}
+                  </motion.span>
+                  <span className="font-sans text-sm font-medium text-mist transition group-hover:text-bone sm:text-base">
+                    {p.name}
                   </span>
-                )}
-              </span>
-              <span className="font-sans text-sm font-medium text-mist transition group-hover:text-bone sm:text-base">
-                {p.name}
-              </span>
-              <span className="max-w-[9rem] text-[11px] leading-snug text-smoke">{p.blurb}</span>
-            </button>
-          </motion.li>
-        ))}
+                  <span className="max-w-[9.5rem] text-[11px] leading-snug text-smoke">{p.blurb}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-signal/80">
+                    Starts at {startsAt}
+                  </span>
+                </button>
+              </Magnetic>
+            </motion.li>
+          );
+        })}
       </motion.ul>
-      <p className="relative mt-12 max-w-md text-center text-xs leading-relaxed text-smoke">
-        Same story of {profile.displayName} — each lens only changes what comes first.
-      </p>
+
+      <motion.p
+        className="relative mt-12 max-w-md text-center text-xs leading-relaxed text-smoke"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: locked ? 0 : 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.45 }}
+      >
+        Same portfolio of {profile.displayName} — each path only changes what comes first.
+      </motion.p>
     </motion.div>
   );
 }

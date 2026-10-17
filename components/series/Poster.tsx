@@ -127,20 +127,21 @@ export function ProjectPoster({ project, className = '' }: { project: Project; c
 /** Alias used by cards / modal. */
 export const ProjectArt = ProjectPoster;
 
-/** Small fictional platform mark used in the nav and on cards. */
+/** Small studio mark used in the nav and hero. */
 export function SeriesMark({ className = '' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-1.5 ${className}`}>
-      <svg viewBox="0 0 24 32" className="h-[1.1em] w-auto" aria-hidden>
+      <svg viewBox="0 0 28 28" className="h-[1.05em] w-auto text-signal" fill="none" aria-hidden>
+        <rect x="2" y="2" width="24" height="24" rx="4" stroke="currentColor" strokeWidth="1.6" strokeOpacity="0.7" />
         <path
-          d="M18 6c-1.8-1.8-4-2.6-6.5-2.6C7.6 3.4 5 5.6 5 9c0 7.6 14 4.6 14 11.6 0 3-2.8 5-6.4 5-3 0-5.4-1.2-7.2-3"
-          fill="none"
-          stroke="#2dd4bf"
-          strokeWidth="4"
+          d="M18.5 9.5H10.2c-1.7 0-3 1.3-3 3v1.4c0 1.7 1.3 3 3 3H16c1.5 0 2.7-1.1 2.9-2.5H14"
+          stroke="currentColor"
+          strokeWidth="2.2"
           strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
-      <span className="font-sans text-[0.62em] font-bold tracking-[0.36em] text-mist">SERIES</span>
+      <span className="font-sans text-[0.62em] font-bold tracking-[0.36em] text-mist">STUDIO</span>
     </span>
   );
 }
