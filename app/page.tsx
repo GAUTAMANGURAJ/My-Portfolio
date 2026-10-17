@@ -1,5 +1,5 @@
-import SeriesApp from '@/components/series/SeriesApp';
+import PortfolioApp from '@/components/studio/PortfolioApp';
 
 export default function Home() {
-  return <SeriesApp />;
+  return <PortfolioApp />;
 }

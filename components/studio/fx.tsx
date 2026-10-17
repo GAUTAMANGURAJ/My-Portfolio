@@ -79,11 +79,24 @@ export function Tilt({
 }
 
 /** Word-by-word blur-to-focus reveal for headings. */
-export function RevealText({ text, className = '', delay = 0, as = 'span' }: { text: string; className?: string; delay?: number; as?: 'span' | 'h2' | 'h3' | 'p' }) {
+export function RevealText({
+  text,
+  className = '',
+  delay = 0,
+  as = 'span',
+  id,
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+  as?: 'span' | 'h2' | 'h3' | 'p';
+  id?: string;
+}) {
   const Tag = motion[as];
   const words = text.split(' ');
   return (
     <Tag
+      id={id}
       className={className}
       initial="hidden"
       whileInView="show"
@@ -135,6 +148,8 @@ export function SectionHeading({ kicker, title, aside }: { kicker: string; title
 export function Particles({ count = 46, color = '45,212,191', className = '' }: { count?: number; color?: string; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotionPref();
+  const fine = useFinePointer();
+  const dotsCount = fine ? count : Math.min(count, 14);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -155,7 +170,7 @@ export function Particles({ count = 46, color = '45,212,191', className = '' }: 
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    const dots = Array.from({ length: count }, () => ({
+    const dots = Array.from({ length: dotsCount }, () => ({
       x: Math.random(),
       y: Math.random(),
       r: Math.random() * 1.6 + 0.3,
@@ -206,7 +221,7 @@ export function Particles({ count = 46, color = '45,212,191', className = '' }: 
       ro.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [count, color, reduced]);
+  }, [dotsCount, color, reduced]);
 
   return <canvas ref={ref} aria-hidden className={`pointer-events-none absolute inset-0 h-full w-full ${className}`} />;
 }

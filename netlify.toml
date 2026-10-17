@@ -1,6 +1,7 @@
-[build]
-command = "npx next build"
-publish = ".next"
+# This portfolio deploys via GitHub Pages (see .github/workflows/deploy.yml).
+# Static export output is `out/`, not `.next`.
+# Netlify is not the primary host — kept only as a pointer for contributors.
 
-[[plugins]]
-package = "@netlify/plugin-nextjs"
+[build]
+command = "npm run build"
+publish = "out"

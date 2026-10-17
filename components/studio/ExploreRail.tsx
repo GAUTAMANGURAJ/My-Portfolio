@@ -2,18 +2,26 @@
 
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { sectionMeta, type SectionId } from '@/lib/content/portfolio';
-import { useWatchProgress } from '@/hooks/sectionProgress';
+import { projects, sectionMeta, topPicks, type SectionId } from '@/lib/content/portfolio';
+import { useSectionProgress } from '@/hooks/sectionProgress';
 import { useSmoothScroll } from '@/hooks/smoothScroll';
 import { useFinePointer } from '@/hooks/useMedia';
 import { EASE, RevealText } from './fx';
 import { PosterBackdrop } from './Poster';
 import { RailButtons } from './Rail';
 
-const GLYPHS: Record<SectionId, string> = { about: 'S', journey: 'S01', originals: '4', picks: '10', skills: '{ }', moments: '★', story: 'CV' };
+const GLYPHS: Record<SectionId, string> = {
+  about: 'SE',
+  journey: 'CH',
+  originals: String(projects.length),
+  picks: String(topPicks.length),
+  skills: '{ }',
+  moments: '★',
+  story: 'CV',
+};
 
-export default function ContinueWatching({ order }: { order: SectionId[] }) {
-  const progress = useWatchProgress();
+export default function ExploreRail({ order }: { order: SectionId[] }) {
+  const progress = useSectionProgress();
   const { scrollTo } = useSmoothScroll();
   const fine = useFinePointer();
   const [hovered, setHovered] = useState<number | null>(null);
@@ -22,8 +30,16 @@ export default function ContinueWatching({ order }: { order: SectionId[] }) {
   return (
     <section aria-labelledby="continue-title" className="relative z-10 -mt-10 pb-10 sm:-mt-16">
       <div className="gutter mb-4 flex items-end justify-between">
-        <RevealText as="h2" text="Continue Exploring" className="font-sans text-lg font-semibold tracking-tight text-bone sm:text-2xl" />
-        <span className="hidden text-xs text-smoke sm:block">Progress shows how far you&apos;ve scrolled</span>
+        <RevealText
+          id="continue-title"
+          as="h2"
+          text="Continue Exploring"
+          className="font-sans text-lg font-semibold tracking-tight text-bone sm:text-2xl"
+        />
+        <span className="text-xs text-smoke">
+          <span className="sm:hidden">Swipe · progress updates as you scroll</span>
+          <span className="hidden sm:inline">Progress shows how far you&apos;ve scrolled</span>
+        </span>
       </div>
       <div className="group/rail relative">
         <div ref={rail} className="rail gutter flex snap-x snap-mandatory gap-3 overflow-x-auto py-8 sm:gap-4" data-cursor={fine ? undefined : 'drag'}>
@@ -35,7 +51,7 @@ export default function ContinueWatching({ order }: { order: SectionId[] }) {
               <motion.button
                 key={id}
                 type="button"
-                data-cursor="play"
+                data-cursor="link"
                 onClick={() => scrollTo(`#${id}`)}
                 onHoverStart={() => setHovered(i)}
                 onHoverEnd={() => setHovered(null)}
@@ -64,7 +80,7 @@ export default function ContinueWatching({ order }: { order: SectionId[] }) {
                     </span>
                   </div>
                   <span className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/40 text-xs text-bone backdrop-blur transition duration-500 group-hover:scale-110 group-hover:border-bone group-hover:bg-bone group-hover:text-ink">
-                    ▶
+                    →
                   </span>
                 </div>
                 <div className="mt-2 h-[3px] w-full overflow-hidden rounded bg-white/15">

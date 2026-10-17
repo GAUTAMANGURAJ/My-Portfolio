@@ -4,10 +4,10 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { seasons } from '@/lib/content/portfolio';
 import { EASE, SectionHeading } from './fx';
-import EpisodeCard from './EpisodeCard';
+import MilestoneCard from './MilestoneCard';
 import { RailButtons } from './Rail';
 
-export default function Seasons() {
+export default function Journey() {
   const [active, setActive] = useState(Math.max(0, seasons.length - 2));
   const season = seasons[active];
   const rail = useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ export default function Seasons() {
               className="rail gutter flex snap-x snap-mandatory gap-4 overflow-x-auto py-8 touch-pan-x [perspective:1200px]"
             >
               {season.episodes.map((e, i) => (
-                <EpisodeCard key={e.code} episode={e} index={i} />
+                <MilestoneCard key={e.code} episode={e} index={i} />
               ))}
             </div>
             <RailButtons rail={rail} />

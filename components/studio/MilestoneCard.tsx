@@ -5,7 +5,7 @@ import type { Episode } from '@/lib/content/portfolio';
 import { EASE, Tilt } from './fx';
 import { PosterBackdrop } from './Poster';
 
-export default function EpisodeCard({ episode, index }: { episode: Episode; index: number }) {
+export default function MilestoneCard({ episode, index }: { episode: Episode; index: number }) {
   const parts = episode.code.split(' ');
   const chapter = parts[0]?.replace('S', 'CH') ?? 'CH';
   const milestone = parts[1]?.replace('E', '') ?? String(index + 1);

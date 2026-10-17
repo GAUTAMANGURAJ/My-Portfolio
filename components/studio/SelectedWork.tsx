@@ -11,7 +11,7 @@ import ProjectCard from './ProjectCard';
  * WORK — desktop pins and scrolls sideways via Lenis/scroll progress.
  * Mobile / reduced motion: native horizontal snap rail with touch scrolling.
  */
-export default function Originals({ onOpen }: { onOpen: (p: Project) => void }) {
+export default function SelectedWork({ onOpen }: { onOpen: (p: Project) => void }) {
   const desktop = useDesktop();
   const reduced = useReducedMotionPref();
   return desktop && !reduced ? <PinnedWork onOpen={onOpen} /> : <RailWork onOpen={onOpen} />;

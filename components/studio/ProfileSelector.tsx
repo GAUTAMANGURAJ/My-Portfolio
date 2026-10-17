@@ -18,7 +18,12 @@ export function ProfileAvatar({ id, size = 'lg' }: { id: ProfileId; size?: 'sm' 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={profile.portrait.src}
+          srcSet={profile.portrait.srcSet}
+          sizes="144px"
+          width={profile.portrait.width}
+          height={profile.portrait.height}
           alt=""
+          decoding="async"
           className="absolute inset-x-0 bottom-0 mx-auto h-[115%] w-auto max-w-none object-cover object-top"
         />
       </span>
@@ -63,6 +68,7 @@ export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) =>
       transition={{ duration: 0.75, ease: EASE }}
       role="dialog"
       aria-label="Choose how to enter the portfolio"
+      aria-busy={locked ? true : undefined}
     >
       {/* Blueprint handoff atmosphere */}
       <motion.div

@@ -23,7 +23,7 @@ export default function Achievements() {
 
   return (
     <>
-      <SectionHeading kicker="Awards season" title="Top Moments" />
+      <SectionHeading kicker="Recognition" title="Impact" />
 
       <div className="gutter grid gap-4 sm:grid-cols-2 lg:grid-cols-3 [perspective:1400px]">
         {achievements.map((a, i) => (

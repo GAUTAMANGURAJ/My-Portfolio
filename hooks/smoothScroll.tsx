@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from 'react';
 import Lenis from 'lenis';
-import { useReducedMotionPref } from './useMedia';
+import { useMedia, useReducedMotionPref } from './useMedia';
 
 type ScrollApi = {
   scrollTo: (target: string | HTMLElement | number, opts?: { offset?: number; immediate?: boolean; duration?: number }) => void;
@@ -20,6 +20,7 @@ const ScrollCtx = createContext<ScrollApi | null>(null);
  */
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const reduced = useReducedMotionPref();
+  const coarse = useMedia('(pointer: coarse)');
   const lenisRef = useRef<Lenis | null>(null);
   const locks = useRef(0);
   const progressRef = useRef(0);
@@ -28,10 +29,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     if (reduced) return;
 
     const lenis = new Lenis({
-      duration: 1.7,
+      // Softer inertia on touch devices for less jank
+      duration: coarse ? 1.05 : 1.55,
       smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.2,
+      wheelMultiplier: coarse ? 1 : 0.85,
+      touchMultiplier: 1,
       // Keep native touch for horizontal rails; Lenis still smooths vertical page scroll
       syncTouch: false,
       easing: (t) => 1 - Math.pow(1 - t, 4),
@@ -60,11 +62,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reduced]);
+  }, [reduced, coarse]);
 
   const scrollTo = useCallback<ScrollApi['scrollTo']>((target, opts = {}) => {
     const offset = opts.offset ?? -72;
-    const duration = opts.duration ?? 1.65;
+    const duration = opts.duration ?? (coarse ? 1.05 : 1.45);
     const el = typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target;
     if (el === null) return;
     if (lenisRef.current) {
@@ -73,7 +75,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       const top = typeof el === 'number' ? el : el.getBoundingClientRect().top + window.scrollY + offset;
       window.scrollTo({ top, behavior: opts.immediate ? 'auto' : 'smooth' });
     }
-  }, []);
+  }, [coarse]);
 
   const lock = useCallback(() => {
     locks.current += 1;

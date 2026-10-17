@@ -3,8 +3,7 @@
 import { useEffect, useSyncExternalStore, type RefObject } from 'react';
 
 /**
- * Tracks how much of each section the visitor has actually watched (0–1),
- * so the "Continue Exploring" progress bars reflect real viewing, not fake numbers.
+ * Tracks how far each section has been viewed (0–1) for the Explore rail progress bars.
  */
 const progress: Record<string, number> = {};
 const listeners = new Set<() => void>();
@@ -17,7 +16,7 @@ function set(id: string, value: number) {
   listeners.forEach((l) => l());
 }
 
-export function useWatchProgress() {
+export function useSectionProgress() {
   return useSyncExternalStore(
     (cb) => {
       listeners.add(cb);
@@ -27,6 +26,9 @@ export function useWatchProgress() {
     () => snapshot,
   );
 }
+
+/** @deprecated Prefer useSectionProgress */
+export const useWatchProgress = useSectionProgress;
 
 export function useTrackProgress(id: string, ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
@@ -45,8 +47,10 @@ export function useTrackProgress(id: string, ref: RefObject<HTMLElement | null>)
     };
     measure();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('lenis-scroll', onScroll as EventListener);
     return () => {
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('lenis-scroll', onScroll as EventListener);
       cancelAnimationFrame(raf);
     };
   }, [id, ref]);

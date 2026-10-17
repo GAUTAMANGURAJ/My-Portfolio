@@ -8,9 +8,9 @@ import { z } from 'zod';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { profile } from '@/lib/content/portfolio';
 import { useSmoothScroll } from '@/hooks/smoothScroll';
-import { useReducedMotionPref } from '@/hooks/useMedia';
+import { useFinePointer, useReducedMotionPref } from '@/hooks/useMedia';
 import { EASE, Magnetic, Particles } from './fx';
-import { SeriesMark } from './Poster';
+import { StudioMark } from './Poster';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Please enter your name').max(80),
@@ -68,6 +68,7 @@ const CHANNELS = [
 export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotionPref();
+  const fine = useFinePointer();
   const { scrollTo } = useSmoothScroll();
   const [status, setStatus] = useState<Status>('idle');
   const [toast, setToast] = useState<ToastState>(null);
@@ -76,6 +77,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
   const yTitle = useTransform(scrollYProgress, [0, 1], [40, 0]);
   const opacity = useTransform(scrollYProgress, [0.05, 0.65], [0, 1]);
   const panelY = useTransform(scrollYProgress, [0.1, 0.85], [48, 0]);
+  const toastMs = reduced ? 2200 : fine ? 9600 : 6400;
 
   useEffect(() => {
     setMounted(true);
@@ -83,10 +85,9 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
 
   useEffect(() => {
     if (!toast) return;
-    // Match jet flight: ~5.5s arrive + 2s hold + ~1.8s exit
-    const t = window.setTimeout(() => setToast(null), reduced ? 2200 : 9600);
+    const t = window.setTimeout(() => setToast(null), toastMs);
     return () => window.clearTimeout(t);
-  }, [toast, reduced]);
+  }, [toast, toastMs]);
 
   const {
     register,
@@ -156,7 +157,9 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
     mounted &&
     createPortal(
       <AnimatePresence>
-        {toast && <AirplaneBannerToast key={`${toast.tone}-${toast.title}`} toast={toast} reduced={reduced} />}
+        {toast && (
+          <AirplaneBannerToast key={`${toast.tone}-${toast.title}`} toast={toast} reduced={reduced} fine={fine} />
+        )}
       </AnimatePresence>,
       document.body,
     );
@@ -181,7 +184,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
           maskImage: 'radial-gradient(ellipse at center, black 22%, transparent 70%)',
         }}
       />
-      <Particles count={44} color="45,212,191" />
+      <Particles count={28} color="45,212,191" className="hidden sm:block" />
 
       <motion.div className="relative z-10 w-full max-w-5xl px-2 text-center" style={{ opacity }}>
         <motion.p
@@ -428,7 +431,9 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
                 </motion.button>
               </Magnetic>
               <p className="text-center text-[11px] tracking-wide text-smoke">
-                Delivered to my inbox · usually replies within 24–48h
+                {process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY
+                  ? 'Delivered to my inbox · usually replies within 24–48h'
+                  : 'Opens your mail app with a prefilled message · usually replies within 24–48h'}
               </p>
             </motion.div>
           </motion.form>
@@ -439,7 +444,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="text-center sm:text-left">
             <div className="mb-2 flex items-center justify-center gap-2.5 sm:justify-start">
-              <SeriesMark />
+              <StudioMark />
               <span className="font-display text-lg tracking-wide text-bone">{profile.displayName}</span>
             </div>
             <p className="text-sm text-mist">
@@ -454,7 +459,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
             </button>
             <span aria-hidden className="hidden h-3 w-px bg-white/15 sm:block" />
             <button type="button" onClick={onReplay} className="transition hover:text-bone">
-              Replay intro
+              Replay opening
             </button>
           </div>
         </div>
@@ -516,14 +521,16 @@ function SendIcon() {
 function AirplaneBannerToast({
   toast,
   reduced,
+  fine,
 }: {
   toast: NonNullable<ToastState>;
   reduced: boolean;
+  fine: boolean;
 }) {
   const success = toast.tone === 'success';
   const accent = success ? '#2dd4bf' : '#fcd34d';
-  // ~5.5s arrival · 2s hold · ~1.8s exit
-  const FLIGHT = 9.3;
+  // Desktop: slow cruise · Mobile: shorter so it doesn’t block the screen
+  const FLIGHT = reduced ? 2.2 : fine ? 9.3 : 6.2;
 
   return (
     <motion.div

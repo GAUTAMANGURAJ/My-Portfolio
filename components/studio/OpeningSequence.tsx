@@ -161,8 +161,12 @@ export default function OpeningSequence({ onDone }: { onDone: () => void }) {
         <img
           src={profile.portrait.src}
           srcSet={profile.portrait.srcSet}
-          sizes="(max-width: 768px) 100vw, 900px"
+          sizes={profile.portrait.sizes}
+          width={profile.portrait.width}
+          height={profile.portrait.height}
           alt={profile.portrait.alt}
+          fetchPriority="high"
+          decoding="async"
           className="h-full w-auto max-w-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_52%,transparent_98%)]"
         />
         <motion.div

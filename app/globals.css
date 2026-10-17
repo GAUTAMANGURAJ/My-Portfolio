@@ -4,7 +4,7 @@
 
 /**
  * INTERFACE ORIGINALS — design tokens
- * Swap values here (or via [data-theme]) to restyle the whole series.
+ * Swap values here (or via [data-theme]) to restyle the whole portfolio.
  * Distinct from streaming-red clones: navy field + teal signal + copper gold.
  */
 :root,
@@ -240,6 +240,26 @@ a:focus-visible {
   border-width: 0;
 }
 
+/* Touch / small screens: drop animated grain (CPU) and heavy streaks */
+@media (pointer: coarse), (max-width: 768px) {
+  .grain {
+    display: none;
+  }
+  .light-streak {
+    display: none;
+  }
+  .atmosphere::after {
+    opacity: 0.025;
+  }
+  .shimmer-text {
+    animation: none;
+    color: var(--color-bone);
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .grain,
   .light-streak,
@@ -254,5 +274,75 @@ a:focus-visible {
     background: none;
     -webkit-background-clip: unset;
     background-clip: unset;
+  }
+}
+
+/* Print-friendly resume (paper / PDF via browser print) */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .atmosphere,
+  .grain,
+  .no-print,
+  header,
+  nav,
+  [role='dialog'] > .absolute.inset-0,
+  .custom-cursor,
+  canvas {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+    filter: none !important;
+  }
+
+  #resume-print,
+  #resume-print * {
+    visibility: visible !important;
+  }
+
+  #resume-print {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #111 !important;
+    ring: none !important;
+  }
+
+  #resume-print a {
+    color: #0f766e !important;
+    text-decoration: none !important;
+  }
+
+  #resume-print .text-bone,
+  #resume-print .text-mist,
+  #resume-print .text-smoke,
+  #resume-print .text-signal {
+    color: #111 !important;
+  }
+
+  #resume-print .border-white\/10,
+  #resume-print .border-b {
+    border-color: #d4d4d8 !important;
   }
 }

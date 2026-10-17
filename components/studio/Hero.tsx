@@ -6,7 +6,7 @@ import { achievements, experience, profile, projects, type ProfileId } from '@/l
 import { useFinePointer, useReducedMotionPref } from '@/hooks/useMedia';
 import { useSmoothScroll } from '@/hooks/smoothScroll';
 import { EASE, Magnetic, Particles } from './fx';
-import { SeriesMark } from './Poster';
+import { StudioMark } from './Poster';
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } } };
 const item = {
@@ -21,9 +21,11 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
   const { scrollTo } = useSmoothScroll();
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '6%' : '20%']);
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1, reduced ? 1.04 : 1.14]);
-  const textY = useTransform(scrollYProgress, [0, 1], ['0%', reduced ? '-10%' : '-32%']);
+  // Softer parallax on touch / reduced-motion (less compositor work)
+  const soft = reduced || !fine;
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', soft ? '5%' : '20%']);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, soft ? 1.03 : 1.14]);
+  const textY = useTransform(scrollYProgress, [0, 1], ['0%', soft ? '-8%' : '-32%']);
   const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const blackout = useTransform(scrollYProgress, [0.35, 1], [0, 1]);
   const gridOpacity = useTransform(scrollYProgress, [0, 0.4], [0.12, 0]);
@@ -86,15 +88,15 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
         }}
       />
 
-      <Particles className="z-[1]" color="45,212,191" />
-      <div aria-hidden className="absolute inset-0 z-[1] overflow-hidden">
+      <Particles className="z-[1] hidden sm:block" color="45,212,191" count={fine ? 46 : 18} />
+      <div aria-hidden className="absolute inset-0 z-[1] hidden overflow-hidden sm:block">
         <span className="light-streak left-[40%] top-[22%] w-[50vw]" style={{ animationDelay: '1.2s' }} />
         <span className="light-streak left-[30%] top-[64%] w-[40vw]" style={{ animationDelay: '3.6s' }} />
         <span className="light-streak left-[55%] top-[44%] w-[30vw]" style={{ animationDelay: '5.2s' }} />
       </div>
 
       <motion.div
-        className="absolute inset-x-0 top-12 z-[2] flex h-[58svh] items-end justify-center sm:h-[66svh] lg:bottom-0 lg:left-auto lg:right-[3vw] lg:top-20 lg:h-auto lg:w-[54vw] xl:right-[6vw] xl:w-[48vw]"
+        className="absolute inset-x-0 top-14 z-[2] flex h-[48svh] items-end justify-center sm:top-12 sm:h-[66svh] lg:bottom-0 lg:left-auto lg:right-[3vw] lg:top-20 lg:h-auto lg:w-[54vw] xl:right-[6vw] xl:w-[48vw]"
         style={{ y: imgY, scale: imgScale, opacity: fade }}
       >
         <motion.div
@@ -114,8 +116,12 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
           <img
             src={profile.portrait.src}
             srcSet={profile.portrait.srcSet}
-            sizes="(max-width: 1024px) 100vw, 54vw"
+            sizes={profile.portrait.sizes}
+            width={profile.portrait.width}
+            height={profile.portrait.height}
             alt={profile.portrait.alt}
+            fetchPriority="high"
+            decoding="async"
             className="absolute bottom-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] [mask-image:linear-gradient(to_bottom,black_62%,transparent_97%)]"
           />
           <div
@@ -153,19 +159,19 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
         </div>
       </motion.div>
 
-      <div aria-hidden className="absolute inset-x-0 top-[40svh] z-[3] h-[36svh] bg-gradient-to-b from-transparent via-ink/70 to-ink lg:hidden" />
+      <div aria-hidden className="absolute inset-x-0 top-[32svh] z-[3] h-[40svh] bg-gradient-to-b from-transparent via-ink/75 to-ink sm:top-[40svh] sm:h-[36svh] lg:hidden" />
       <div aria-hidden className="absolute inset-0 z-[3] hidden bg-[linear-gradient(90deg,var(--color-ink)_0%,rgba(6,9,16,0.7)_32%,transparent_58%)] lg:block" />
       <div aria-hidden className="absolute inset-x-0 bottom-0 z-[3] h-48 bg-gradient-to-t from-ink to-transparent" />
 
       <motion.div
-        className="gutter relative z-[4] flex min-h-[100svh] flex-col justify-end pb-16 pt-[58svh] sm:pb-20 lg:max-w-[52vw] lg:justify-center lg:pb-0 lg:pt-24"
+        className="gutter relative z-[4] flex min-h-[100svh] flex-col justify-end pb-14 pt-[50svh] sm:pb-20 sm:pt-[58svh] lg:max-w-[52vw] lg:justify-center lg:pb-0 lg:pt-24"
         style={{ y: textY, opacity: fade }}
         variants={container}
         initial="hidden"
         animate="show"
       >
-        <motion.div variants={item} className="mb-3 text-lg">
-          <SeriesMark />
+        <motion.div variants={item} className="mb-2 text-base sm:mb-3 sm:text-lg">
+          <StudioMark />
         </motion.div>
         <motion.h1 variants={item} className="font-display leading-[0.82] tracking-[0.02em] text-bone" style={{ fontSize: 'clamp(4rem, 12vw, 11rem)' }}>
           <span className="shimmer-text">{profile.firstName}</span>
@@ -216,6 +222,7 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
           <Magnetic>
             <button
               type="button"
+              data-cursor="link"
               onClick={() => scrollTo('#originals')}
               className="glass flex min-h-12 items-center gap-3 rounded-md px-6 py-3 text-[15px] font-semibold text-bone transition hover:bg-white/15 sm:px-8"
             >
@@ -224,6 +231,7 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
           </Magnetic>
           <button
             type="button"
+            data-cursor="link"
             onClick={() => scrollTo('#about')}
             aria-label="About"
             className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 text-lg text-bone transition hover:border-bone hover:bg-white/10"

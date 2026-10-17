@@ -36,8 +36,14 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
           </motion.div>
 
           <div className="absolute left-5 top-5 flex items-center gap-2 sm:left-7 sm:top-7">
-            <span className="font-display text-xl leading-none text-signal">S</span>
-            <span className="text-[10px] font-bold tracking-[0.34em] text-bone/80">ORIGINAL</span>
+            <span className="rounded-full border border-white/20 bg-black/35 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-bone/90 backdrop-blur">
+              Case study
+            </span>
+            {project.accessNote && (
+              <span className="hidden rounded-full border border-white/15 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-mist backdrop-blur sm:inline">
+                Private
+              </span>
+            )}
           </div>
           <span className="absolute right-5 top-5 rounded border border-white/30 px-1.5 py-px text-[10px] font-bold text-bone sm:right-7 sm:top-7">{project.year}</span>
 
@@ -46,28 +52,41 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
             <motion.h3 layoutId={`title-${project.id}`} className="font-display text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.88] tracking-wide text-bone">
               {project.title}
             </motion.h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-bone/75 sm:text-[15px]">{project.logline}</p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-bone/80 sm:text-[15px]">{project.caseStudy.outcome}</p>
             <div className="mt-4 flex flex-wrap gap-1.5">
-              {project.stack.map((t) => (
+              {project.stack.slice(0, 4).map((t) => (
                 <span key={t} className="rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-bone/90 backdrop-blur">
                   {t}
                 </span>
               ))}
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <span className="flex min-h-11 items-center gap-2 rounded-md bg-bone px-5 text-sm font-bold text-ink transition group-hover:bg-white">▶ View Project</span>
-              {project.github && (
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-cursor="link"
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex min-h-11 items-center gap-2 rounded-md border border-white/25 bg-black/30 px-4 text-sm font-semibold text-bone backdrop-blur transition hover:border-bone"
+              <span
+                className="relative inline-flex min-h-12 items-center gap-3 overflow-hidden rounded-full border px-6 py-2.5 text-sm font-semibold tracking-wide text-bone backdrop-blur-md transition duration-500 group-hover:translate-y-[-1px]"
+                style={{
+                  borderColor: `${project.palette.accent}66`,
+                  background: `linear-gradient(135deg, ${project.palette.accent}22, rgba(6,9,16,0.55) 55%, ${project.palette.accent}14)`,
+                  boxShadow: `0 0 0 1px ${project.palette.accent}18 inset, 0 10px 28px ${project.palette.accent}18`,
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 -translate-x-full opacity-0 transition duration-700 group-hover:translate-x-full group-hover:opacity-100"
+                  style={{
+                    background: `linear-gradient(115deg, transparent 15%, ${project.palette.accent}33 50%, transparent 85%)`,
+                  }}
+                />
+                <span
+                  className="relative flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold text-ink transition duration-500 group-hover:scale-110"
+                  style={{
+                    background: project.palette.accent,
+                    boxShadow: `0 0 16px ${project.palette.accent}66`,
+                  }}
                 >
-                  GitHub ↗
-                </a>
-              )}
+                  →
+                </span>
+                <span className="relative">View case study</span>
+              </span>
             </div>
           </div>
         </div>

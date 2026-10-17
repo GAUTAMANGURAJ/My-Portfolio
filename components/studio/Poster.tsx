@@ -32,7 +32,7 @@ export function PosterBackdrop({ palette, children, className = '' }: { palette:
   );
 }
 
-/** Motif illustrations for each Original — orbit / matrix / stamp / static. */
+/** Motif illustrations — abstract systems art only (never product UI). */
 export function ProjectPoster({ project, className = '' }: { project: Project; className?: string }) {
   const a = project.palette.accent;
   const gid = `g-${project.id}`;
@@ -119,8 +119,75 @@ export function ProjectPoster({ project, className = '' }: { project: Project; c
             </g>
           </g>
         )}
+
+        {project.motif === 'pipeline' && (
+          <g fill="none" stroke={a} transform="translate(175 70)">
+            {[0, 1, 2, 3].map((i) => (
+              <g key={i}>
+                <rect x={i * 48} y={20 + (i % 2) * 8} width="36" height="36" rx="8" strokeWidth="1.6" strokeOpacity={0.35 + i * 0.12} />
+                {i < 3 && (
+                  <path
+                    d={`M${36 + i * 48} ${38 + (i % 2) * 8} L${48 + i * 48} ${38 + ((i + 1) % 2) * 8}`}
+                    strokeWidth="2"
+                    strokeOpacity="0.55"
+                    strokeLinecap="round"
+                  />
+                )}
+              </g>
+            ))}
+            <path d="M8 110 h170" strokeWidth="1.5" strokeOpacity="0.35" strokeDasharray="4 6" />
+            <circle cx="20" cy="110" r="4" fill={a} fillOpacity="0.7" stroke="none" />
+            <circle cx="90" cy="110" r="4" fill={a} fillOpacity="0.5" stroke="none" />
+            <circle cx="160" cy="110" r="4" fill={a} fillOpacity="0.85" stroke="none" />
+          </g>
+        )}
       </svg>
     </PosterBackdrop>
+  );
+}
+
+/**
+ * Abstract system blueprint — labeled stages only.
+ * Never renders product screenshots or client UI.
+ */
+export function SystemBlueprint({
+  stages,
+  accent,
+  title = 'System blueprint',
+}: {
+  stages: string[];
+  accent: string;
+  title?: string;
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-ink/60 p-5 sm:p-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-signal">{title}</p>
+        <span className="rounded-full border border-white/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-smoke">
+          Abstract · no product UI
+        </span>
+      </div>
+      <ol className="flex flex-wrap items-stretch gap-2 sm:gap-3">
+        {stages.map((stage, i) => (
+          <li key={stage} className="flex min-w-[7.5rem] flex-1 items-center gap-2">
+            <div
+              className="flex min-h-[4.5rem] w-full flex-col justify-center rounded-xl border border-white/10 bg-ink-2/90 px-3 py-3"
+              style={{ boxShadow: `inset 0 0 0 1px ${accent}22` }}
+            >
+              <span className="text-[10px] font-bold tracking-[0.2em] text-smoke">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="mt-1 text-sm font-semibold leading-snug text-bone">{stage}</span>
+            </div>
+            {i < stages.length - 1 && (
+              <span className="hidden shrink-0 text-mist sm:inline" style={{ color: accent }} aria-hidden>
+                →
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -128,7 +195,7 @@ export function ProjectPoster({ project, className = '' }: { project: Project; c
 export const ProjectArt = ProjectPoster;
 
 /** Small studio mark used in the nav and hero. */
-export function SeriesMark({ className = '' }: { className?: string }) {
+export function StudioMark({ className = '' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-1.5 ${className}`}>
       <svg viewBox="0 0 28 28" className="h-[1.05em] w-auto text-signal" fill="none" aria-hidden>
@@ -145,3 +212,6 @@ export function SeriesMark({ className = '' }: { className?: string }) {
     </span>
   );
 }
+
+/** @deprecated Prefer StudioMark */
+export const SeriesMark = StudioMark;

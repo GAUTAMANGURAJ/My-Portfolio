@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { projects, type Project } from '@/lib/content/portfolio';
 import { useScrollLock } from '@/hooks/smoothScroll';
 import { EASE, Magnetic } from './fx';
-import { ProjectPoster } from './Poster';
+import { ProjectPoster, SystemBlueprint } from './Poster';
 
 const block = {
   hidden: { opacity: 0, y: 24, filter: 'blur(8px)' },
@@ -68,7 +68,7 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
             </button>
             <div className="absolute inset-x-0 bottom-0 px-5 pb-6 sm:px-10">
               <motion.p className="mb-2 flex items-center gap-2 text-[11px] font-bold tracking-[0.34em] text-bone/80" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                <span className="font-display text-xl tracking-normal text-signal">S</span> ORIGINAL
+                <span className="font-display text-xl tracking-normal text-signal">●</span> SELECTED WORK
               </motion.p>
               <motion.h2
                 id={`title-${project.id}-modal`}
@@ -92,8 +92,8 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
               {project.logline}
             </motion.p>
 
-            {(project.github || project.live) && (
-              <motion.div variants={block} className="mt-6 flex flex-wrap gap-3">
+            {(project.github || project.live || project.accessNote) && (
+              <motion.div variants={block} className="mt-6 flex flex-wrap items-center gap-3">
                 {project.github && (
                   <Magnetic>
                     <a
@@ -120,8 +120,39 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
                     </a>
                   </Magnetic>
                 )}
+                {project.accessNote && (
+                  <p className="rounded-xl border border-white/10 bg-ink/50 px-4 py-3 text-sm text-mist">
+                    {project.accessNote}
+                  </p>
+                )}
               </motion.div>
             )}
+
+            <motion.section variants={block} className="mt-10">
+              <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.3em] text-signal">Case study</h3>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {(
+                  [
+                    { k: 'Problem', v: project.caseStudy.problem },
+                    { k: 'My role', v: project.caseStudy.role },
+                    { k: 'Outcome', v: project.caseStudy.outcome },
+                  ] as const
+                ).map((item) => (
+                  <div
+                    key={item.k}
+                    className="rounded-2xl border border-white/10 bg-ink/40 p-4 sm:p-5"
+                    style={{ boxShadow: `inset 0 0 0 1px ${project.palette.accent}18` }}
+                  >
+                    <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-smoke">{item.k}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-bone/90">{item.v}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+
+            <motion.section variants={block} className="mt-8">
+              <SystemBlueprint stages={project.systemFlow} accent={project.palette.accent} />
+            </motion.section>
 
             <motion.section variants={block} className="mt-12">
               <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.3em] text-signal">Result / Impact</h3>

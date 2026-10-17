@@ -4,41 +4,44 @@ import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, LayoutGroup, MotionConfig, motion } from 'framer-motion';
 import { viewerProfiles, type ProfileId, type Project } from '@/lib/content/portfolio';
 import { SmoothScrollProvider, useSmoothScroll } from '@/hooks/smoothScroll';
+import { useFinePointer } from '@/hooks/useMedia';
 import OpeningSequence from './OpeningSequence';
 import ProfileSelector from './ProfileSelector';
-import SeriesHome from './SeriesHome';
-import CustomCursor from './CustomCursor';
+import PortfolioHome from './PortfolioHome';
 import ScrollProgress from './ScrollProgress';
 import { EASE } from './fx';
 
-const PlayIntro = lazy(() => import('./PlayIntro'));
+const CustomCursor = lazy(() => import('./CustomCursor'));
+const HighlightsReel = lazy(() => import('./HighlightsReel'));
 const ProjectModal = lazy(() => import('./ProjectModal'));
 const ResumeModal = lazy(() => import('./ResumeModal'));
 
 type Stage = 'opening' | 'profiles' | 'home';
 
-const STORAGE_KEY = 'gautam-interface-originals-profile';
+const STORAGE_KEY = 'gautam-portfolio-path';
+const LEGACY_STORAGE_KEY = 'gautam-interface-originals-profile';
 
 function readStoredProfile(): ProfileId | null {
   try {
-    const v = sessionStorage.getItem(STORAGE_KEY);
+    const v = sessionStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(LEGACY_STORAGE_KEY);
     return viewerProfiles.some((p) => p.id === v) ? (v as ProfileId) : null;
   } catch {
     return null;
   }
 }
 
-export default function SeriesApp() {
+export default function PortfolioApp() {
   return (
     <MotionConfig reducedMotion="user">
       <SmoothScrollProvider>
-        <Series />
+        <StudioShell />
       </SmoothScrollProvider>
     </MotionConfig>
   );
 }
 
-function Series() {
+function StudioShell() {
+  const fine = useFinePointer();
   const [stage, setStage] = useState<Stage>('opening');
   const [profileId, setProfileId] = useState<ProfileId>('gautam');
   const [hydrated, setHydrated] = useState(false);
@@ -49,9 +52,18 @@ function Series() {
   const { scrollTo, lock, unlock } = useSmoothScroll();
 
   useEffect(() => {
-    const s = readStoredProfile();
-    if (s) {
-      setProfileId(s);
+    const params = new URLSearchParams(window.location.search);
+    const quick = params.get('quick') === '1';
+    const hasHash = Boolean(window.location.hash.replace(/^#/, ''));
+    const pathParam = params.get('path') as ProfileId | null;
+    const stored = readStoredProfile();
+    const pathOk = pathParam && viewerProfiles.some((p) => p.id === pathParam) ? pathParam : null;
+
+    if (pathOk) setProfileId(pathOk);
+    else if (stored) setProfileId(stored);
+
+    // Recruiters / deep links: skip opening + path picker
+    if (quick || pathOk || stored || hasHash) {
       setStage('home');
     }
     setHydrated(true);
@@ -101,8 +113,12 @@ function Series() {
   return (
     <LayoutGroup>
       <div className="atmosphere" aria-hidden />
-      <div className="grain" aria-hidden />
-      <CustomCursor />
+      {fine && <div className="grain" aria-hidden />}
+      {fine && (
+        <Suspense fallback={null}>
+          <CustomCursor />
+        </Suspense>
+      )}
       {stage === 'home' && <ScrollProgress />}
 
       <AnimatePresence>
@@ -119,7 +135,7 @@ function Series() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.85, ease: EASE }}
         >
-          <SeriesHome
+          <PortfolioHome
             profileId={profileId}
             onSwitch={pickProfile}
             onPlay={() => setPlaying(true)}
@@ -128,6 +144,7 @@ function Series() {
             onReplay={() => {
               try {
                 sessionStorage.removeItem(STORAGE_KEY);
+                sessionStorage.removeItem(LEGACY_STORAGE_KEY);
               } catch {
                 /* ignore */
               }
@@ -138,7 +155,7 @@ function Series() {
       )}
 
       <Suspense fallback={null}>
-        <AnimatePresence>{playing && <PlayIntro key="intro" onClose={closeIntro} />}</AnimatePresence>
+        <AnimatePresence>{playing && <HighlightsReel key="intro" onClose={closeIntro} />}</AnimatePresence>
         <AnimatePresence>
           {project && (
             <ProjectModal key="project" project={project} onClose={closeProject} onSwitch={setProject} />

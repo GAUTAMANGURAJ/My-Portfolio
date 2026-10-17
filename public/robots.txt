@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gautamanguraj.github.io/gautam-m-a-portfolio/sitemap.xml

@@ -6,10 +6,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { profile, sectionMeta, viewerProfiles, type ProfileId, type SectionId } from '@/lib/content/portfolio';
 import { useSmoothScroll } from '@/hooks/smoothScroll';
 import { ProfileAvatar } from './ProfileSelector';
-import { SeriesMark } from './Poster';
+import { StudioMark } from './Poster';
 import { EASE } from './fx';
 
 type ThemeId = 'interface' | 'ember';
+
+const THEME_KEY = 'gautam-portfolio-theme';
+
+function readStoredTheme(): ThemeId {
+  try {
+    const t = localStorage.getItem(THEME_KEY);
+    if (t === 'interface' || t === 'ember') return t;
+  } catch {
+    /* ignore */
+  }
+  return 'interface';
+}
 
 export default function Navbar({
   order,
@@ -31,12 +43,19 @@ export default function Navbar({
   const current = viewerProfiles.find((p) => p.id === profileId)!;
 
   useEffect(() => {
+    setTheme(readStoredTheme());
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
     document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      /* ignore */
+    }
+  }, [theme, mounted]);
 
   useEffect(() => {
     let prev = 0;
@@ -101,7 +120,7 @@ export default function Navbar({
             data-cursor="link"
           >
             <span className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-signal/25 bg-ink-2 shadow-[0_0_20px_rgba(45,212,191,0.12)] transition group-hover:border-signal/50">
-              <SeriesMark className="!gap-0 [&_span]:hidden [&_svg]:h-5 [&_svg]:w-5" />
+              <StudioMark className="!gap-0 [&_span]:hidden [&_svg]:h-5 [&_svg]:w-5" />
             </span>
             <span className="flex min-w-0 flex-col items-start leading-none">
               <span className="text-[9px] font-semibold uppercase tracking-[0.28em] text-smoke transition group-hover:text-mist">
@@ -308,7 +327,10 @@ export default function Navbar({
                       <li key={p.id}>
                         <button
                           type="button"
-                          onClick={() => onSwitch(p.id)}
+                          onClick={() => {
+                            onSwitch(p.id);
+                            setMenuOpen(false);
+                          }}
                           className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${
                             selected
                               ? 'border-signal/40 bg-signal/10'

@@ -14,7 +14,7 @@ export default function About() {
 
   return (
     <>
-      <SectionHeading kicker="The Pilot" title="About Me" />
+      <SectionHeading kicker="Background" title="About Me" />
       <div className="gutter grid items-start gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
         <motion.div
           className="mx-auto w-full max-w-md lg:max-w-none"
@@ -31,19 +31,22 @@ export default function About() {
               <img
                 src={profile.portrait.src}
                 srcSet={profile.portrait.srcSet}
-                sizes="(max-width: 1024px) 90vw, 40vw"
+                sizes={profile.portrait.sizes}
+                width={profile.portrait.width}
+                height={profile.portrait.height}
                 alt={profile.portrait.alt}
                 loading="lazy"
+                decoding="async"
                 className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom"
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/90 to-transparent" />
               <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
                 <div>
-                  <p className="text-[10px] font-bold tracking-[0.3em] text-signal">STARRING</p>
+                  <p className="text-[10px] font-bold tracking-[0.3em] text-signal">SOFTWARE ENGINEER</p>
                   <p className="font-display text-3xl leading-none text-bone">{profile.displayName}</p>
                 </div>
                 <span className="rounded border border-white/30 px-1.5 text-[10px] font-bold text-bone">
-                  S01–S{String(seasons.length).padStart(2, '0')}
+                  {seasons.length} chapters
                 </span>
               </div>
             </div>
@@ -51,7 +54,7 @@ export default function About() {
         </motion.div>
 
         <div>
-          <RevealText as="h3" text="The story so far" className="font-display text-3xl tracking-wide text-bone sm:text-4xl" />
+          <RevealText as="h3" text="In brief" className="font-display text-3xl tracking-wide text-bone sm:text-4xl" />
           <motion.p
             className="mt-5 font-serif text-[clamp(1.15rem,2.4vw,1.55rem)] italic leading-[1.35] text-bone"
             initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}

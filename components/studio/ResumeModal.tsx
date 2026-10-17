@@ -30,8 +30,15 @@ export default function ResumeModal({ onClose }: { onClose: () => void }) {
       aria-label="Resume"
     >
       <div className="gutter flex h-16 shrink-0 items-center justify-between gap-3 pt-[env(safe-area-inset-top)]">
-        <p className="truncate font-display text-2xl tracking-wide text-bone">The Full Story</p>
+        <p className="truncate font-display text-2xl tracking-wide text-bone">Resume</p>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="hidden rounded-md border border-white/20 px-4 py-2 text-xs font-semibold text-bone hover:bg-white/10 sm:inline-flex"
+          >
+            ⎙ Print
+          </button>
           <a href={profile.resumePdf} download="Gautam_MA_Resume.pdf" className="rounded-md bg-bone px-4 py-2 text-xs font-bold text-ink">
             ⤓ Download
           </a>
