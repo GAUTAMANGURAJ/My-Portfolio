@@ -35,6 +35,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Lint
+        run: npm run lint
+
       - name: Build static website
         env:
           NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY: ${{ secrets.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY }}
@@ -47,6 +50,8 @@ jobs:
         run: |
           test -d out
           test -f out/index.html
+          # Ensure basePath assets are present in the export
+          test -f out/assets/portrait-hero-480.jpg || test -f out/assets/portrait-hero.jpg
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

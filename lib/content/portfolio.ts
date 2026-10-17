@@ -12,7 +12,7 @@ export const profile = {
   fullName: 'Gautam M A',
   displayName: 'Gautam M A',
   firstName: 'GAUTAM',
-  seriesTag: 'FRONTEND SYSTEMS',
+  studioTag: 'FRONTEND SYSTEMS',
   /** Label used in opening / studio moments. */
   originalLabel: 'BLUEPRINT → REALITY',
   role: 'Software Engineer',
@@ -65,11 +65,32 @@ export const experience = [
     place: 'Pollachi, India',
     period: 'April 2025 – Present',
     points: [
-      'Frontend ownership across enterprise platforms — an ESG intelligence suite and a robotic-arm operations SaaS (backoffice + client portal).',
-      'Independently delivered a Contract Management System and a financial-accounts marketing website (static Next.js).',
-      'Led significant work on an internal frontend requirements-to-code orchestration pipeline (216-file reusable library).',
-      'Resolved 87 of 90 high- and highest-severity defects; recognized as Budding Star of the Year 2025–2026.',
+      'Sole frontend owner for a robotic-arm operations SaaS (backoffice + client portal) — shipped in the planned window with 0 rejected PRs and 0 post-launch incidents.',
+      'Frontend ownership on an ESG intelligence platform — 87/90 high-severity defects resolved; CR phase, UAT, and docs through completion.',
+      'Majority contributor on a frontend requirements-to-code orchestration initiative — 216-file reusable library (components, state, forms, routing).',
+      'Independently delivered Contract Management (CRUD + multi-level approval + RBAC) and a Next.js static financial-accounts site on timeline.',
+      'Recognized as Budding Star of the Year 2025–2026 for ownership, quality, and delivery impact.',
     ],
+  },
+];
+
+/** How I work — short principles for About + resume. */
+export const workingPrinciples: { title: string; detail: string }[] = [
+  {
+    title: 'Own the surface area',
+    detail: 'Prefer clear ownership of modules end-to-end — UI, API contracts, edge cases, and post-launch support — over drive-by tickets.',
+  },
+  {
+    title: 'Prove with outcomes',
+    detail: 'Ship with measurable signals: defect burn-down, launch windows, reusable systems, and production stability — not just feature checklists.',
+  },
+  {
+    title: 'Reuse before rewrite',
+    detail: 'Extract shared modules, RBAC patterns, and form/state primitives so the next feature is cheaper and safer than the last.',
+  },
+  {
+    title: 'Privacy by default',
+    detail: 'Client product UI stays private. Case studies use problem → role → outcome and abstract system blueprints.',
   },
 ];
 
@@ -80,6 +101,8 @@ export type CaseStudy = {
   problem: string;
   role: string;
   outcome: string;
+  /** One-line proof metric for cards / resume. */
+  proof: string;
 };
 
 export type Project = {
@@ -101,7 +124,7 @@ export type Project = {
   /** Shown when work is client/enterprise and has no public demo. */
   accessNote?: string;
   palette: Palette;
-  motif: 'orbit' | 'matrix' | 'stamp' | 'static' | 'pipeline';
+  motif: 'orbit' | 'matrix' | 'stamp' | 'static' | 'pipeline' | 'blueprint';
 };
 
 const signal: Palette = { from: '#042f2e', via: '#0f766e', to: '#060910', accent: '#2dd4bf' };
@@ -120,17 +143,19 @@ export const projects: Project[] = [
       'Sole frontend ownership of two connected experiences — internal backoffice and client-facing portal for robotic-arm operations — shipped in the planned launch window.',
     caseStudy: {
       problem:
-        'Operations teams needed two aligned experiences — internal control and client-facing access — without duplicating UI logic or weakening access control.',
-      role: 'Sole frontend owner for backoffice and client portal: RBAC, sessions, multi-step flows, and shared modules.',
-      outcome: 'Shipped in the planned window with zero rejected PRs and no post-launch production incidents.',
+        'Operations needed two aligned apps (internal control + client access) without duplicating UI logic or weakening access control.',
+      role: 'Sole frontend owner: RBAC, JWT sessions, multi-step flows, and shared UI/API modules across both apps.',
+      outcome:
+        'Both apps launched in the planned window — review-clean delivery and stable production after go-live.',
+      proof: '2 apps · 0 rejected PRs · 0 post-launch incidents',
     },
     systemFlow: ['Auth & RBAC', 'Backoffice', 'Shared UI/API', 'Client portal', 'Production support'],
     stack: ['React', 'TypeScript', 'RBAC', 'REST APIs'],
     build: [
-      'Became the sole frontend developer responsible for the internal backoffice and the client-facing portal.',
-      'Delivered both applications within the planned launch window, with zero rejected pull requests and no post-launch production incidents.',
-      'Implemented role-based access control, JWT-protected routes, session and expiry handling, multi-step configuration workflows, and reusable UI/API modules.',
-      'Continued managing post-release enhancements and support for production applications.',
+      'Sole frontend developer for the internal backoffice and the client-facing portal.',
+      'Delivered both applications within the planned launch window — zero rejected pull requests and no post-launch production incidents.',
+      'Implemented RBAC, JWT-protected routes, session/expiry handling, multi-step configuration workflows, and reusable UI/API modules.',
+      'Continued post-release enhancements and production support.',
     ],
     features: [
       'Permission-aware interfaces',
@@ -158,25 +183,38 @@ export const projects: Project[] = [
       'Majority contributor on a four-person initiative that designed a requirements-to-code orchestration flow and a 216-file reusable frontend library.',
     caseStudy: {
       problem:
-        'Frontend delivery needed a clearer path from requirements to consistent, reusable implementation patterns across the team.',
-      role: 'Majority contributor: pipeline design plus a reusable library of components, state, forms, and routing primitives.',
-      outcome: '216-file library and a structured orchestration flow that raised the team baseline.',
+        'Frontend delivery lacked a shared path from requirements to consistent components, state, forms, and routing — each feature reinvented patterns.',
+      role:
+        'Majority contributor: defined the six-stage orchestration flow and authored the reusable library used to raise the team baseline.',
+      outcome:
+        'A structured requirements→code pipeline plus a 216-file library covering components, state, forms, routing, and UI primitives.',
+      proof: '216-file library · 6-stage pipeline · majority contributor',
     },
-    systemFlow: ['Requirements', 'Architecture', 'Components', 'Validation', 'Reusable library'],
+    systemFlow: [
+      'Requirements analysis',
+      'Architecture',
+      'Component planning',
+      'Dependency validation',
+      'Code generation',
+      'Validation & library',
+    ],
     stack: ['Architecture', 'Component systems', 'State', 'Forms', 'Routing'],
     build: [
-      'Structured pipeline: requirements analysis → architecture → component planning → dependency validation → code generation → validation.',
-      'Authored a reusable library covering components, state, forms, routing, and UI primitives used to raise the team baseline.',
-      'Worked as majority contributor in a four-person internal initiative alongside product delivery.',
+      'Designed a six-stage pipeline: requirements analysis → architecture → component planning → dependency validation → code generation → validation.',
+      'Authored a reusable library (216 files) covering components, state, forms, routing, and UI primitives.',
+      'Operated as majority contributor in a four-person internal initiative while shipping product work in parallel.',
+      'Goal: fewer one-off patterns, faster reviews, and a clearer path from ticket to production-ready UI.',
     ],
     features: [
-      'Requirements-to-code orchestration flow',
+      'Six-stage requirements-to-code flow',
       'Reusable component & pattern library',
       'Shared state, forms, and routing modules',
+      'Dependency validation before generation',
       'Team baseline acceleration',
     ],
     metrics: [
       { value: '216', label: 'library files authored' },
+      { value: '6', label: 'orchestration stages' },
       { value: '4', label: 'person initiative' },
       { value: '1', label: 'majority contributor' },
     ],
@@ -193,15 +231,18 @@ export const projects: Project[] = [
       'Frontend ownership across complex ESG business modules — indicators, materiality, report configuration, and subscriptions.',
     caseStudy: {
       problem:
-        'Complex ESG configuration and reporting modules needed reliable frontend ownership across auth, data flows, and change requests.',
-      role: 'Frontend owner across indicators, materiality, reporting, subscriptions — plus CR phase, UAT, and docs.',
-      outcome: 'Resolved 87/90 high-severity defects and drove major feature epics through completion.',
+        'ESG configuration and reporting modules needed durable frontend ownership across auth, data flows, change requests, and UAT.',
+      role:
+        'Frontend owner for indicators, materiality, reporting, subscriptions — plus CR implementation, UAT, walkthroughs, and docs.',
+      outcome:
+        'Cleared the severity backlog and carried major feature epics through completion into a stable enterprise surface.',
+      proof: '87/90 high-severity defects resolved · CR owned end-to-end',
     },
     systemFlow: ['Auth', 'Indicators', 'Materiality', 'Reporting', 'Subscriptions'],
     stack: ['React', 'API integration', 'State management', 'Enterprise UI'],
     build: [
-      'Took frontend ownership of authentication, indicator management, materiality assessment, report configuration, subscriptions, and related enterprise modules.',
-      'Returned for a subsequent change-request phase — implementation, UAT support, client walkthroughs, and user documentation through completion.',
+      'Frontend ownership of authentication, indicator management, materiality assessment, report configuration, subscriptions, and related modules.',
+      'Returned for a change-request phase — implementation, UAT support, client walkthroughs, and user documentation through completion.',
       'Resolved 87 of 90 high- and highest-severity defects and helped drive major feature epics toward completion.',
     ],
     features: [
@@ -215,7 +256,8 @@ export const projects: Project[] = [
     metrics: [
       { value: '87/90', label: 'high-severity defects resolved' },
       { value: 'CR', label: 'phase owned end-to-end' },
-      { value: 'ESG', label: 'enterprise modules' },
+      { value: '5+', label: 'enterprise modules touched' },
+      { value: 'UAT', label: 'walkthroughs & docs' },
     ],
     accessNote: 'Enterprise · private systems · no product screenshots · walkthrough on request',
     palette: ocean,
@@ -230,15 +272,18 @@ export const projects: Project[] = [
       'Independently built CRUD workflows for organizational contracts — create, review, multi-level approval, and role-based access.',
     caseStudy: {
       problem:
-        'The organization needed a first production-ready contract module with create, review, approval, and permission-aware access.',
+        'Needed a first production-ready contract module with create, review, multi-level approval, and permission-aware access.',
       role: 'Independent frontend delivery: UI, API integration, CRUD, approvals, and RBAC.',
-      outcome: 'First end-to-end enterprise module shipped as a reusable template for later work.',
+      outcome:
+        'First end-to-end enterprise module shipped — became a reusable CRUD + approval template for later work.',
+      proof: '1st independent enterprise module · CRUD + RBAC + approvals',
     },
     systemFlow: ['Create', 'Review', 'Multi-level approval', 'RBAC', 'Records'],
     stack: ['Forms', 'CRUD', 'Approval flows', 'RBAC'],
     build: [
       'First end-to-end frontend delivery in an enterprise setting at Pirai Infotech.',
       'Covered UI development, API integration, CRUD operations, approval workflows, and role-based access control.',
+      'Established patterns later reused across modules (forms, permissions, review states).',
     ],
     features: [
       'Contract create & review flows',
@@ -249,6 +294,7 @@ export const projects: Project[] = [
     metrics: [
       { value: '1st', label: 'independent enterprise module' },
       { value: 'RBAC', label: 'permission-aware flows' },
+      { value: 'CRUD', label: 'template for later modules' },
     ],
     accessNote: 'Enterprise · private systems · no product screenshots · walkthrough on request',
     palette: amber,
@@ -265,13 +311,15 @@ export const projects: Project[] = [
       problem:
         'A financial-accounts product needed a clean, responsive web presence delivered on a firm timeline.',
       role: 'Independent Next.js implementation with reusable components and consistent layout patterns.',
-      outcome: 'Shipped on timeline with stakeholder appreciation; strengthened Next.js delivery confidence.',
+      outcome:
+        'Shipped on timeline with stakeholder appreciation — validated Next.js static delivery under real constraints.',
+      proof: 'Next.js self-learned · shipped on timeline',
     },
     systemFlow: ['Content model', 'Reusable UI', 'Responsive pages', 'Static export', 'Handoff'],
     stack: ['Next.js', 'Reusable UI', 'Responsive'],
     build: [
-      'Independently delivered a complete static website implementation for financial-accounts messaging and product presence.',
-      'Emphasis on clean structure, responsive behavior, and consistent reusable interface patterns.',
+      'Independently delivered a complete static website for financial-accounts messaging and product presence.',
+      'Emphasized clean structure, responsive behavior, and consistent reusable interface patterns.',
     ],
     features: [
       'Responsive static pages',
@@ -281,11 +329,52 @@ export const projects: Project[] = [
     ],
     metrics: [
       { value: 'Next.js', label: 'self-learned & shipped' },
+      { value: 'On time', label: 'stakeholder delivery' },
       { value: 'Static', label: 'product website' },
     ],
     accessNote: 'Client engagement · public URL available on request · no confidential UI shown',
     palette: jade,
     motif: 'static',
+  },
+  {
+    id: 'studio-portfolio',
+    title: 'Engineering Portfolio Studio',
+    year: '2026',
+    genre: 'Personal · Next.js · Static export · Case studies',
+    logline:
+      'Designed and shipped this portfolio as a privacy-safe case-study system — static Next.js on GitHub Pages, recruiter paths, and abstract system blueprints.',
+    caseStudy: {
+      problem:
+        'Needed a hiring-facing site that proves frontend systems ownership without exposing client product UI or confidential screens.',
+      role:
+        'Sole designer/engineer: content model, case-study layout, motion system, contact inbox, analytics, and Pages deploy.',
+      outcome:
+        'Public static site with problem→role→outcome studies, path-based viewing, print resume, and privacy-light analytics.',
+      proof: 'Public · static export · privacy-safe case studies',
+    },
+    systemFlow: ['Content model', 'Studio UI', 'Case studies', 'Static export', 'Pages + analytics'],
+    stack: ['Next.js', 'TypeScript', 'Framer Motion', 'GitHub Pages'],
+    build: [
+      'Built a static-exported Next.js app with basePath for GitHub Pages.',
+      'Centralized facts in a single content module; projects use privacy-safe case studies and abstract system diagrams.',
+      'Added recruiter/developer viewing paths, contact via Web3Forms, print-friendly resume, and GoatCounter analytics.',
+    ],
+    features: [
+      'Privacy-safe case studies (no product screenshots)',
+      'Path-based viewing (recruiter / developer / creative)',
+      'Print resume + downloadable PDF',
+      'Contact Signal Desk (Web3Forms)',
+      'Privacy-light visitor analytics',
+    ],
+    metrics: [
+      { value: '1', label: 'public craft surface' },
+      { value: '0', label: 'client UI leaked' },
+      { value: '₹0', label: 'custom domain required' },
+    ],
+    live: 'https://gautamanguraj.github.io/gautam-m-a-portfolio/',
+    github: 'https://github.com/GAUTAMANGURAJ/gautam-m-a-portfolio',
+    palette: signal,
+    motif: 'blueprint',
   },
 ];
 
@@ -309,14 +398,14 @@ export const achievements: Achievement[] = [
     id: 'robotic-arm-launch',
     title: 'Platform Launch',
     org: 'Pirai Infotech',
-    detail: 'Sole frontend owner for robotic-arm operations backoffice and client portal — zero rejected PRs, no post-launch production incidents.',
+    detail: 'Sole frontend owner for robotic-arm operations backoffice and client portal — 0 rejected PRs, 0 post-launch production incidents.',
     laurel: 'Production',
   },
   {
     id: 'orchestration',
     title: 'Frontend Orchestration',
     org: 'Internal Initiative',
-    detail: 'Majority contributor on a four-person initiative; authored a reusable library of 216 files covering components and patterns.',
+    detail: 'Majority contributor on a four-person initiative; six-stage requirements-to-code pipeline and a 216-file reusable library.',
     laurel: '216 Files',
   },
 ];
@@ -411,17 +500,17 @@ export const skillCategories: SkillCategory[] = [
 
 export const skillEvidence: Record<string, string[]> = {
   React: ['Robotic Arm Operations Platform', 'ESG Intelligence Platform', 'Contract Management System'],
-  'Next.js': ['Financial Accounts Website', 'This portfolio'],
-  TypeScript: ['Robotic Arm Operations Platform', 'ESG Intelligence Platform'],
+  'Next.js': ['Financial Accounts Website', 'Engineering Portfolio Studio'],
+  TypeScript: ['Robotic Arm Operations Platform', 'ESG Intelligence Platform', 'Engineering Portfolio Studio'],
   JavaScript: ['ESG Intelligence Platform', 'Contract Management System'],
-  'Tailwind CSS': ['Financial Accounts Website', 'This portfolio'],
+  'Tailwind CSS': ['Financial Accounts Website', 'Engineering Portfolio Studio'],
   'HTML5 / CSS3': ['Marketing sites & enterprise UI'],
   'TanStack Query': ['ESG Intelligence Platform', 'Robotic Arm Operations Platform'],
   Zustand: ['ESG Intelligence Platform state patterns'],
   'React Hook Form': ['Contract Management System', 'Multi-step workflows'],
   Zod: ['Form validation · Contact Signal Desk'],
   'shadcn / Radix': ['Accessible UI primitives across apps'],
-  'Framer Motion': ['This portfolio · motion systems'],
+  'Framer Motion': ['Engineering Portfolio Studio · motion systems'],
   'REST APIs': ['Robotic Arm Operations Platform', 'ESG Intelligence Platform', 'Contract Management System'],
   RBAC: ['Robotic Arm Operations Platform', 'Contract Management System'],
   'JWT Auth': ['Robotic Arm Operations Platform', 'ESG Intelligence Platform'],
@@ -441,8 +530,7 @@ export const skillEvidence: Record<string, string[]> = {
   pnpm: ['Package management'],
 };
 
-/** Journey milestone (historically named Episode). */
-export type Episode = {
+export type Milestone = {
   code: string;
   title: string;
   description: string;
@@ -450,28 +538,25 @@ export type Episode = {
   runtime: string;
   palette: Palette;
 };
-export type Milestone = Episode;
 
-/** Journey chapter (historically named Season). */
-export type Season = {
+export type Chapter = {
   number: number;
   title: string;
   period: string;
   synopsis: string;
-  episodes: Episode[];
+  milestones: Milestone[];
 };
-export type Chapter = Season;
 
-export const seasons: Season[] = [
+export const chapters: Chapter[] = [
   {
     number: 1,
     title: 'Building the Foundation',
     period: '2019 – 2025',
     synopsis:
       'From diploma foundations in Pollachi to Computer Science at IRTT — discovering frontend development and practical software.',
-    episodes: [
+    milestones: [
       {
-        code: 'S01 E01',
+        code: 'CH01 M01',
         title: 'The Diploma',
         description:
           'Diploma in Automobile Engineering at Nachimuthu Polytechnic College, Pollachi — discipline, systems thinking, and a path into tech.',
@@ -480,7 +565,7 @@ export const seasons: Season[] = [
         palette: amber,
       },
       {
-        code: 'S01 E02',
+        code: 'CH01 M02',
         title: 'Enter CSE',
         description:
           'B.E. Computer Science and Engineering at the Institute of Road and Transport Technology, Erode — HTML, CSS, JavaScript, React, and modern web.',
@@ -489,7 +574,7 @@ export const seasons: Season[] = [
         palette: violet,
       },
       {
-        code: 'S01 E03',
+        code: 'CH01 M03',
         title: 'The Builder',
         description:
           'Turned technical knowledge into practical, user-friendly web applications and prepared for a career in software development.',
@@ -505,9 +590,9 @@ export const seasons: Season[] = [
     period: 'April 2025 – March 2026',
     synopsis:
       'Joined Pirai Infotech as a Software Engineer — first modules, stakeholder trust, and enterprise platform ownership.',
-    episodes: [
+    milestones: [
       {
-        code: 'S02 E01',
+        code: 'CH02 M01',
         title: 'First Module',
         description:
           'Independently delivered the Contract Management System — UI, API integration, CRUD, approvals, and RBAC.',
@@ -516,7 +601,7 @@ export const seasons: Season[] = [
         palette: amber,
       },
       {
-        code: 'S02 E02',
+        code: 'CH02 M02',
         title: 'Static, Shipped',
         description:
           'Self-learned Next.js and delivered a responsive financial-accounts static website on timeline with stakeholder appreciation.',
@@ -525,7 +610,7 @@ export const seasons: Season[] = [
         palette: jade,
       },
       {
-        code: 'S02 E03',
+        code: 'CH02 M03',
         title: 'ESG Ownership',
         description:
           'Took frontend ownership of an ESG intelligence platform — authentication, indicators, materiality, reporting, subscriptions — plus CR phase, UAT, and docs.',
@@ -534,7 +619,7 @@ export const seasons: Season[] = [
         palette: ocean,
       },
       {
-        code: 'S02 E04',
+        code: 'CH02 M04',
         title: 'Quality Arc',
         description: 'Resolved 87 of 90 high- and highest-severity defects and helped drive major feature epics toward completion.',
         tags: ['87/90', 'Quality'],
@@ -548,9 +633,9 @@ export const seasons: Season[] = [
     title: 'Complete Frontend Ownership',
     period: 'April 2026 – Present',
     synopsis: 'Sole frontend developer for a robotic-arm operations SaaS — backoffice and client portal, production-ready.',
-    episodes: [
+    milestones: [
       {
-        code: 'S03 E01',
+        code: 'CH03 M01',
         title: 'Two Applications',
         description:
           'Owned both the internal backoffice and the client-facing portal — RBAC, JWT routes, sessions, multi-step workflows, shared modules.',
@@ -559,7 +644,7 @@ export const seasons: Season[] = [
         palette: signal,
       },
       {
-        code: 'S03 E02',
+        code: 'CH03 M02',
         title: 'Clean Launch',
         description:
           'Delivered within the planned launch window — zero rejected pull requests and no post-launch production incidents.',
@@ -575,9 +660,9 @@ export const seasons: Season[] = [
     period: 'June – August 2026',
     synopsis:
       'Designed an internal frontend requirements-to-code orchestration pipeline — raising the team baseline.',
-    episodes: [
+    milestones: [
       {
-        code: 'S04 E01',
+        code: 'CH04 M01',
         title: 'The Pipeline',
         description:
           'Structured flow: requirements analysis → architecture → component planning → dependency validation → code generation → validation.',
@@ -586,7 +671,7 @@ export const seasons: Season[] = [
         palette: violet,
       },
       {
-        code: 'S04 E02',
+        code: 'CH04 M02',
         title: '216 Files',
         description:
           'Majority contributor in a four-person initiative; authored a reusable library covering components, state, forms, routing, and UI primitives.',
@@ -602,9 +687,9 @@ export const seasons: Season[] = [
     period: '2026 – Present',
     synopsis:
       'Deepening frontend craft while growing into Python, FastAPI, and AI-assisted engineering workflows.',
-    episodes: [
+    milestones: [
       {
-        code: 'S05 E01',
+        code: 'CH05 M01',
         title: 'Backend Growth',
         description:
           'Expanding with Python, FastAPI, SQLAlchemy, Pydantic, PostgreSQL, and authentication concepts through practical implementation.',
@@ -613,7 +698,7 @@ export const seasons: Season[] = [
         palette: ocean,
       },
       {
-        code: 'S05 E02',
+        code: 'CH05 M02',
         title: 'Product Engineer',
         description:
           'Working toward full-stack product engineering — requirements, systems design, reliable apps, and lifecycle ownership.',
@@ -629,14 +714,14 @@ export type TopPick = { label: string; title: string; detail: string; palette: P
 
 export const topPicks: TopPick[] = [
   { label: 'Primary craft', title: 'React + TypeScript', detail: 'Enterprise frontend ownership', palette: signal },
-  { label: 'Flagship work', title: 'Robotics SaaS', detail: 'Sole FE · 2 apps · clean launch', palette: ocean },
-  { label: 'Enterprise depth', title: 'ESG Platform', detail: '87/90 severity defects resolved', palette: amber },
-  { label: 'Team multiplier', title: 'Orchestration', detail: '216-file reusable library', palette: violet },
+  { label: 'Flagship work', title: 'Robotics SaaS', detail: '2 apps · 0 rejected PRs · 0 incidents', palette: ocean },
+  { label: 'Enterprise depth', title: 'ESG Platform', detail: '87/90 high-severity defects closed', palette: amber },
+  { label: 'Team multiplier', title: 'Orchestration', detail: '216-file library · 6-stage pipeline', palette: violet },
   { label: 'Recognition', title: 'Budding Star', detail: 'Pirai Infotech 2025–2026', palette: jade },
   { label: 'First module', title: 'Contracts', detail: 'Independent CRUD + approvals + RBAC', palette: amber },
   { label: 'Static ship', title: 'Accounts Site', detail: 'Next.js static site on timeline', palette: jade },
+  { label: 'Public craft', title: 'Portfolio Studio', detail: 'Privacy-safe case studies · Pages', palette: signal },
   { label: 'Growing stack', title: 'Python / FastAPI', detail: 'Full-stack direction', palette: ocean },
-  { label: 'Quality bar', title: '0 incidents', detail: 'Post-launch production stability', palette: signal },
   { label: 'Current mission', title: 'Product Engineer', detail: 'Frontend architecture → full lifecycle', palette: violet },
 ];
 
@@ -652,13 +737,13 @@ export const introSlides: IntroSlide[] = [
   {
     kicker: 'Work',
     title: 'Robotics SaaS',
-    lines: ['Sole frontend owner · backoffice + client portal', 'Zero rejected PRs · no post-launch incidents'],
+    lines: ['Sole frontend owner · backoffice + client portal', '0 rejected PRs · 0 post-launch incidents'],
     chips: ['RBAC', 'JWT', 'React'],
   },
   {
     kicker: 'Work',
     title: 'ESG Platform',
-    lines: ['Enterprise ESG modules end-to-end', '87 of 90 high-severity defects resolved'],
+    lines: ['Enterprise ESG modules end-to-end', '87/90 high-severity defects resolved'],
     chips: ['SaaS', 'Enterprise UI'],
   },
   {
@@ -669,7 +754,7 @@ export const introSlides: IntroSlide[] = [
   {
     kicker: 'Systems',
     title: 'Orchestration',
-    lines: ['Requirements-to-code pipeline', '216-file reusable frontend library'],
+    lines: ['Six-stage requirements-to-code pipeline', '216-file reusable frontend library'],
   },
   {
     kicker: 'Next',
@@ -687,25 +772,29 @@ export const viewerProfiles: {
   blurb: string;
   color: string;
   order: SectionId[];
+  /** Optional path-picker badge (e.g. HIRE). */
+  badge?: string;
 }[] = [
   {
     id: 'gautam',
     name: 'Gautam',
-    blurb: 'Full overview, in order',
+    blurb: 'Full story — about → work → resume',
     color: '#2dd4bf',
     order: ['about', 'journey', 'originals', 'picks', 'skills', 'moments', 'story'],
+    badge: 'FULL',
   },
   {
     id: 'recruiter',
     name: 'Recruiter',
-    blurb: 'Resume, achievements & skills first',
+    blurb: 'Hire-ready: resume → impact → work',
     color: '#38bdf8',
-    order: ['story', 'moments', 'skills', 'originals', 'about', 'journey', 'picks'],
+    order: ['story', 'moments', 'originals', 'skills', 'about', 'journey', 'picks'],
+    badge: 'HIRE',
   },
   {
     id: 'developer',
     name: 'Developer',
-    blurb: 'Projects, stack & craft first',
+    blurb: 'Projects, stack & systems first',
     color: '#34d399',
     order: ['originals', 'skills', 'journey', 'moments', 'about', 'picks', 'story'],
   },
@@ -719,14 +808,14 @@ export const viewerProfiles: {
 ];
 
 export const sectionMeta: Record<SectionId, { nav: string; card: string; meta: string; palette: Palette }> = {
-  about: { nav: 'About', card: 'About Me', meta: 'Education & role', palette: violet },
+  about: { nav: 'About', card: 'About Me', meta: 'Story · how I work', palette: violet },
   journey: {
     nav: 'Journey',
     card: 'My Journey',
-    meta: `${seasons.length} chapters · ${seasons.reduce((n, s) => n + s.episodes.length, 0)} milestones`,
+    meta: `${chapters.length} chapters · ${chapters.reduce((n, s) => n + s.milestones.length, 0)} milestones`,
     palette: amber,
   },
-  originals: { nav: 'Work', card: 'Selected Work', meta: `${projects.length} projects · Enterprise & web`, palette: signal },
+  originals: { nav: 'Work', card: 'Selected Work', meta: `${projects.length} projects · case studies`, palette: signal },
   picks: { nav: 'Highlights', card: 'Highlights', meta: 'Top signals from the work', palette: jade },
   skills: { nav: 'Skills', card: 'My Skills', meta: `${skillCategories.length} Categories`, palette: ocean },
   moments: {
@@ -735,8 +824,8 @@ export const sectionMeta: Record<SectionId, { nav: string; card: string; meta: s
     meta: `${achievements.length} achievements · ${certifications.length} certifications`,
     palette: amber,
   },
-  story: { nav: 'Resume', card: 'Resume', meta: 'Resume · View & download', palette: violet },
+  story: { nav: 'Resume', card: 'Resume', meta: 'One page · proof metrics', palette: violet },
 };
 
 export const storyBlurb =
-  'My journey began with learning the fundamentals of software development in college. At Pirai Infotech, I transformed that foundation into practical engineering experience by independently delivering enterprise features and taking ownership of production applications. Over time, my focus expanded from building interfaces to solving architectural problems, creating reusable engineering standards, and automating the frontend development process. Today, I am building on that experience to grow into a full-stack engineer with a strong foundation in frontend architecture, backend development, and AI-assisted engineering.';
+  'I started with fundamentals in college, then turned them into production ownership at Pirai Infotech — independent enterprise modules, platform frontend ownership, and measurable quality (including 87/90 high-severity defects closed). The work grew from shipping interfaces to shaping reusable systems and a requirements-to-code orchestration pipeline. I am extending that foundation toward full-stack product engineering with Python, FastAPI, and AI-assisted workflows.';

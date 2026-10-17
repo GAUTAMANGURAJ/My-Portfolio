@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { profile } from '@/lib/content/portfolio';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollLock } from '@/hooks/smoothScroll';
 import { useMedia } from '@/hooks/useMedia';
 import { EASE } from './fx';
@@ -12,15 +13,24 @@ import { ResumeSheet } from './ResumeViewer';
 export default function ResumeModal({ onClose }: { onClose: () => void }) {
   useScrollLock(true);
   const small = useMedia('(max-width: 767px)');
+  const root = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  useFocusTrap(true, root);
 
   useEffect(() => {
+    const prevFocus = document.activeElement as HTMLElement | null;
+    closeBtn.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      prevFocus?.focus?.({ preventScroll: true });
+    };
   }, [onClose]);
 
   return (
     <motion.div
+      ref={root}
       className="fixed inset-0 z-[140] flex flex-col bg-black/90 backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -43,6 +53,7 @@ export default function ResumeModal({ onClose }: { onClose: () => void }) {
             ⤓ Download
           </a>
           <button
+            ref={closeBtn}
             type="button"
             onClick={onClose}
             aria-label="Close resume"

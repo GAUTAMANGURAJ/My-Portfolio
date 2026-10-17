@@ -27,9 +27,6 @@ export function useSectionProgress() {
   );
 }
 
-/** @deprecated Prefer useSectionProgress */
-export const useWatchProgress = useSectionProgress;
-
 export function useTrackProgress(id: string, ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const el = ref.current;

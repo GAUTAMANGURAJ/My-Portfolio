@@ -28,10 +28,10 @@ export default function ExploreRail({ order }: { order: SectionId[] }) {
   const rail = useRef<HTMLDivElement>(null);
 
   return (
-    <section aria-labelledby="continue-title" className="relative z-10 -mt-10 pb-10 sm:-mt-16">
-      <div className="gutter mb-4 flex items-end justify-between">
+    <section aria-labelledby="explore-title" className="relative z-10 -mt-6 pb-8 sm:-mt-14 sm:pb-12">
+      <div className="gutter mb-3 flex items-end justify-between sm:mb-4">
         <RevealText
-          id="continue-title"
+          id="explore-title"
           as="h2"
           text="Continue Exploring"
           className="font-sans text-lg font-semibold tracking-tight text-bone sm:text-2xl"
@@ -42,7 +42,13 @@ export default function ExploreRail({ order }: { order: SectionId[] }) {
         </span>
       </div>
       <div className="group/rail relative">
-        <div ref={rail} className="rail gutter flex snap-x snap-mandatory gap-3 overflow-x-auto py-8 sm:gap-4" data-cursor={fine ? undefined : 'drag'}>
+        <div
+          ref={rail}
+          data-lenis-prevent
+          className="rail gutter flex gap-3 overflow-x-auto py-6 sm:gap-4 sm:py-8"
+          data-cursor={fine ? undefined : 'drag'}
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {order.map((id, i) => {
             const meta = sectionMeta[id];
             const p = progress[id] ?? 0;
@@ -57,7 +63,7 @@ export default function ExploreRail({ order }: { order: SectionId[] }) {
                 onHoverEnd={() => setHovered(null)}
                 onFocus={() => setHovered(i)}
                 onBlur={() => setHovered(null)}
-                className="group relative aspect-video w-[72vw] shrink-0 snap-start overflow-visible text-left sm:w-[42vw] md:w-[30vw] lg:w-[22vw]"
+                className="group relative aspect-video w-[70vw] max-w-[18rem] shrink-0 snap-start overflow-visible text-left sm:w-[42vw] sm:max-w-none md:w-[30vw] lg:w-[22vw]"
                 initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
                 whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 viewport={{ once: true, margin: '-5% 0px' }}

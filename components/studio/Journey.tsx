@@ -1,21 +1,38 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { seasons } from '@/lib/content/portfolio';
+import { chapters } from '@/lib/content/portfolio';
 import { EASE, SectionHeading } from './fx';
 import MilestoneCard from './MilestoneCard';
 import { RailButtons } from './Rail';
 
 export default function Journey() {
-  const [active, setActive] = useState(Math.max(0, seasons.length - 2));
-  const season = seasons[active];
+  const [active, setActive] = useState(Math.max(0, chapters.length - 2));
+  const chapter = chapters[active];
   const rail = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const selectChapter = useCallback((i: number) => {
+    setActive(i);
+    rail.current?.scrollTo({ left: 0, behavior: 'smooth' });
+    tabRefs.current[i]?.focus({ preventScroll: true });
+  }, []);
+
+  const onTabKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return;
+    e.preventDefault();
+    const last = chapters.length - 1;
+    if (e.key === 'Home') selectChapter(0);
+    else if (e.key === 'End') selectChapter(last);
+    else if (e.key === 'ArrowRight') selectChapter(Math.min(last, active + 1));
+    else selectChapter(Math.max(0, active - 1));
+  };
 
   return (
     <>
       <SectionHeading
-        kicker={`${seasons.length} chapters`}
+        kicker={`${chapters.length} chapters`}
         title="My Journey"
         aside={
           <p className="max-w-xs text-sm text-mist">
@@ -24,22 +41,31 @@ export default function Journey() {
         }
       />
 
-      <div className="rail gutter mb-8 flex gap-2 overflow-x-auto touch-pan-x" role="tablist" aria-label="Journey chapters">
-        {seasons.map((s, i) => (
+      <div
+        data-lenis-prevent
+        className="rail gutter mb-6 flex gap-2 overflow-x-auto sm:mb-8"
+        role="tablist"
+        aria-label="Journey chapters"
+        onKeyDown={onTabKeyDown}
+      >
+        {chapters.map((s, i) => (
           <motion.button
             key={s.number}
+            ref={(el) => {
+              tabRefs.current[i] = el;
+            }}
+            id={`journey-tab-${s.number}`}
             role="tab"
             aria-selected={i === active}
+            aria-controls={`journey-panel-${s.number}`}
+            tabIndex={i === active ? 0 : -1}
             type="button"
-            onClick={() => {
-              setActive(i);
-              rail.current?.scrollTo({ left: 0, behavior: 'smooth' });
-            }}
+            onClick={() => selectChapter(i)}
             className={`relative shrink-0 rounded-full px-4 py-2.5 text-left transition ${i === active ? 'text-ink' : 'text-mist hover:text-bone'}`}
             whileTap={{ scale: 0.97 }}
           >
             {i === active && (
-              <motion.span layoutId="season-pill" className="absolute inset-0 rounded-full bg-bone" transition={{ duration: 0.5, ease: EASE }} />
+              <motion.span layoutId="chapter-pill" className="absolute inset-0 rounded-full bg-bone" transition={{ duration: 0.5, ease: EASE }} />
             )}
             <span className="relative block text-[10px] font-bold tracking-[0.24em]">
               CHAPTER {String(s.number).padStart(2, '0')}
@@ -51,7 +77,10 @@ export default function Journey() {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={season.number}
+          key={chapter.number}
+          id={`journey-panel-${chapter.number}`}
+          role="tabpanel"
+          aria-labelledby={`journey-tab-${chapter.number}`}
           initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
@@ -59,12 +88,12 @@ export default function Journey() {
         >
           <div className="gutter mb-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <h3 className="font-display text-4xl tracking-wide text-bone sm:text-5xl">
-              <span className="text-outline mr-3">CH{String(season.number).padStart(2, '0')}</span>
-              {season.title}
+              <span className="text-outline mr-3">CH{String(chapter.number).padStart(2, '0')}</span>
+              {chapter.title}
             </h3>
             <span className="text-sm text-mist">
-              {season.period} · {season.episodes.length}{' '}
-              {season.episodes.length === 1 ? 'milestone' : 'milestones'}
+              {chapter.period} · {chapter.milestones.length}{' '}
+              {chapter.milestones.length === 1 ? 'milestone' : 'milestones'}
             </span>
           </div>
           <motion.p
@@ -73,16 +102,17 @@ export default function Journey() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
           >
-            {season.synopsis}
+            {chapter.synopsis}
           </motion.p>
 
           <div className="group/rail relative">
             <div
               ref={rail}
-              className="rail gutter flex snap-x snap-mandatory gap-4 overflow-x-auto py-8 touch-pan-x [perspective:1200px]"
+              data-lenis-prevent
+              className="rail gutter flex gap-4 overflow-x-auto py-6 sm:py-8 [perspective:1200px]"
             >
-              {season.episodes.map((e, i) => (
-                <MilestoneCard key={e.code} episode={e} index={i} />
+              {chapter.milestones.map((m, i) => (
+                <MilestoneCard key={m.code} milestone={m} index={i} />
               ))}
             </div>
             <RailButtons rail={rail} />

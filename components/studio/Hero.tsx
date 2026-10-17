@@ -96,7 +96,7 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
       </div>
 
       <motion.div
-        className="absolute inset-x-0 top-14 z-[2] flex h-[48svh] items-end justify-center sm:top-12 sm:h-[66svh] lg:bottom-0 lg:left-auto lg:right-[3vw] lg:top-20 lg:h-auto lg:w-[54vw] xl:right-[6vw] xl:w-[48vw]"
+        className="absolute inset-x-0 top-[max(3.25rem,env(safe-area-inset-top))] z-[2] flex h-[42svh] items-end justify-center sm:top-12 sm:h-[66svh] lg:bottom-0 lg:left-auto lg:right-[3vw] lg:top-20 lg:h-auto lg:w-[54vw] xl:right-[6vw] xl:w-[48vw]"
         style={{ y: imgY, scale: imgScale, opacity: fade }}
       >
         <motion.div
@@ -137,17 +137,20 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
 
       {/* Mobile impact chips — swipeable strip (desktop chips float on portrait) */}
       <motion.div
-        className="absolute inset-x-0 top-[48svh] z-[4] md:hidden"
+        className="absolute inset-x-0 top-[44svh] z-[4] md:hidden"
         style={{ opacity: fade }}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1, duration: 0.7, ease: EASE }}
       >
-        <div className="flex gap-3 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {floating.map((f, i) => (
+        <div
+          data-lenis-prevent
+          className="rail flex gap-2.5 overflow-x-auto px-4 pb-1"
+        >
+          {floating.slice(0, 3).map((f, i) => (
             <motion.div
               key={f.text}
-              className="glass min-w-[11.5rem] shrink-0 rounded-xl px-3.5 py-2.5"
+              className="glass min-w-[10.5rem] shrink-0 rounded-xl px-3 py-2"
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.1 + i * 0.08, duration: 0.55, ease: EASE }}
@@ -159,12 +162,12 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
         </div>
       </motion.div>
 
-      <div aria-hidden className="absolute inset-x-0 top-[32svh] z-[3] h-[40svh] bg-gradient-to-b from-transparent via-ink/75 to-ink sm:top-[40svh] sm:h-[36svh] lg:hidden" />
+      <div aria-hidden className="absolute inset-x-0 top-[28svh] z-[3] h-[38svh] bg-gradient-to-b from-transparent via-ink/80 to-ink sm:top-[40svh] sm:h-[36svh] lg:hidden" />
       <div aria-hidden className="absolute inset-0 z-[3] hidden bg-[linear-gradient(90deg,var(--color-ink)_0%,rgba(6,9,16,0.7)_32%,transparent_58%)] lg:block" />
-      <div aria-hidden className="absolute inset-x-0 bottom-0 z-[3] h-48 bg-gradient-to-t from-ink to-transparent" />
+      <div aria-hidden className="absolute inset-x-0 bottom-0 z-[3] h-40 bg-gradient-to-t from-ink to-transparent sm:h-48" />
 
       <motion.div
-        className="gutter relative z-[4] flex min-h-[100svh] flex-col justify-end pb-14 pt-[50svh] sm:pb-20 sm:pt-[58svh] lg:max-w-[52vw] lg:justify-center lg:pb-0 lg:pt-24"
+        className="gutter relative z-[4] flex min-h-[100svh] flex-col justify-end pb-[max(3.5rem,env(safe-area-inset-bottom))] pt-[46svh] sm:pb-20 sm:pt-[58svh] lg:max-w-[52vw] lg:justify-center lg:pb-0 lg:pt-24"
         style={{ y: textY, opacity: fade }}
         variants={container}
         initial="hidden"
@@ -177,72 +180,73 @@ export default function Hero({ onPlay, onResume, profileId }: { onPlay: () => vo
           <span className="shimmer-text">{profile.firstName}</span>
         </motion.h1>
         <motion.p variants={item} className="mt-1 font-sans text-sm font-bold tracking-[0.5em] text-signal sm:tracking-[0.62em] sm:text-base">
-          {profile.seriesTag}
+          {profile.studioTag}
         </motion.p>
 
-        <motion.div variants={item} className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] font-medium text-mist">
+        <motion.div variants={item} className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] font-medium text-mist sm:mt-5 sm:text-[13px]">
           <span className="rounded border border-signal/40 bg-signal/10 px-1.5 py-px text-[10px] font-bold tracking-wider text-signal">SE</span>
           {meta.map((m, i) => (
-            <span key={m} className="flex items-center gap-3">
+            <span key={m} className={`flex items-center gap-3 ${i === 3 ? 'hidden sm:flex' : ''}`}>
               {i > 0 && <span className="h-1 w-1 rounded-full bg-smoke" />}
               {m}
             </span>
           ))}
         </motion.div>
 
-        <motion.p variants={item} className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-bone/90 sm:text-xs sm:tracking-[0.34em]">
+        <motion.p variants={item} className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-bone/90 sm:mt-4 sm:text-xs sm:tracking-[0.34em]">
           {profile.tagline.join(' • ')}
         </motion.p>
 
-        <motion.p variants={item} className="mt-4 max-w-xl text-[15px] leading-relaxed text-bone/80 sm:text-base">
+        <motion.p variants={item} className="mt-3 max-w-xl text-[14px] leading-relaxed text-bone/80 sm:mt-4 sm:text-base">
           {profile.intro}
         </motion.p>
 
-        <motion.div variants={item} className="mt-8 flex flex-wrap items-center gap-3">
-          <Magnetic>
+        <motion.div variants={item} className="mt-6 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+          <Magnetic className="w-full sm:w-auto">
             <button
               type="button"
               data-cursor="play"
               onClick={onPlay}
-              className="flex min-h-12 items-center gap-3 rounded-md bg-bone px-6 py-3 text-[15px] font-bold text-ink transition hover:bg-white sm:px-8"
+              className="flex min-h-12 w-full items-center justify-center gap-3 rounded-md bg-bone px-6 py-3 text-[15px] font-bold text-ink transition hover:bg-white sm:w-auto sm:px-8"
             >
               <span className="text-lg">▶</span> View Highlights
             </button>
           </Magnetic>
-          <Magnetic>
-            <button
-              type="button"
-              data-cursor="view"
-              onClick={onResume}
-              className="glass flex min-h-12 items-center gap-3 rounded-md px-6 py-3 text-[15px] font-semibold text-bone transition hover:bg-white/15 sm:px-8"
-            >
-              <span className="text-lg">⤓</span> Resume
-            </button>
-          </Magnetic>
-          <Magnetic>
-            <button
-              type="button"
-              data-cursor="link"
-              onClick={() => scrollTo('#originals')}
-              className="glass flex min-h-12 items-center gap-3 rounded-md px-6 py-3 text-[15px] font-semibold text-bone transition hover:bg-white/15 sm:px-8"
-            >
-              <span className="text-xl leading-none">＋</span> Work
-            </button>
-          </Magnetic>
+          <div className="grid grid-cols-2 gap-2.5 sm:contents">
+            <Magnetic className="w-full sm:w-auto">
+              <button
+                type="button"
+                data-cursor="view"
+                onClick={onResume}
+                className="glass flex min-h-12 w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-[14px] font-semibold text-bone transition hover:bg-white/15 sm:w-auto sm:gap-3 sm:px-8 sm:text-[15px]"
+              >
+                <span className="text-lg">⤓</span> Resume
+              </button>
+            </Magnetic>
+            <Magnetic className="w-full sm:w-auto">
+              <button
+                type="button"
+                data-cursor="link"
+                onClick={() => scrollTo('#originals')}
+                className="glass flex min-h-12 w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-[14px] font-semibold text-bone transition hover:bg-white/15 sm:w-auto sm:gap-3 sm:px-8 sm:text-[15px]"
+              >
+                <span className="text-xl leading-none">＋</span> Work
+              </button>
+            </Magnetic>
+          </div>
           <button
             type="button"
             data-cursor="link"
-            onClick={() => scrollTo('#about')}
-            aria-label="About"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 text-lg text-bone transition hover:border-bone hover:bg-white/10"
+            onClick={() => scrollTo('#contact')}
+            className="glass flex min-h-12 w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-[14px] font-semibold text-bone transition hover:bg-white/15 sm:w-auto sm:px-6 sm:text-[15px]"
           >
-            ⓘ
+            Contact
           </button>
         </motion.div>
 
         <motion.p
           variants={item}
-          className="mt-8 hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-smoke lg:flex"
+          className="mt-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-smoke sm:mt-8 lg:flex"
         >
           <motion.span
             aria-hidden

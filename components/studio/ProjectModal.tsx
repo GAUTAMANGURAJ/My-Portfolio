@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { projects, type Project } from '@/lib/content/portfolio';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollLock } from '@/hooks/smoothScroll';
 import { EASE, Magnetic } from './fx';
 import { ProjectPoster, SystemBlueprint } from './Poster';
@@ -14,8 +15,10 @@ const block = {
 
 export default function ProjectModal({ project, onClose, onSwitch }: { project: Project; onClose: () => void; onSwitch: (p: Project) => void }) {
   useScrollLock(true);
+  const root = useRef<HTMLDivElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
+  useFocusTrap(true, root);
 
   useEffect(() => {
     const prevFocus = document.activeElement as HTMLElement | null;
@@ -35,7 +38,13 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
   const more = projects.filter((p) => p.id !== project.id);
 
   return (
-    <motion.div className="fixed inset-0 z-[140]" role="dialog" aria-modal="true" aria-labelledby={`title-${project.id}-modal`}>
+    <motion.div
+      ref={root}
+      className="fixed inset-0 z-[140]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={`title-${project.id}-modal`}
+    >
       <motion.div
         className="absolute inset-0 bg-black/80 backdrop-blur-md"
         initial={{ opacity: 0 }}
@@ -130,6 +139,16 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
 
             <motion.section variants={block} className="mt-10">
               <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.3em] text-signal">Case study</h3>
+              <p
+                className="mb-4 rounded-xl border px-4 py-3 text-sm font-semibold tracking-wide"
+                style={{
+                  borderColor: `${project.palette.accent}55`,
+                  color: project.palette.accent,
+                  background: `${project.palette.accent}12`,
+                }}
+              >
+                {project.caseStudy.proof}
+              </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {(
                   [

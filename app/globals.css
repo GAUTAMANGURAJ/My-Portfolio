@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 /**
- * INTERFACE ORIGINALS — design tokens
+ * Studio design tokens
  * Swap values here (or via [data-theme]) to restyle the whole portfolio.
- * Distinct from streaming-red clones: navy field + teal signal + copper gold.
+ * Navy field + teal signal + copper gold.
  */
 :root,
 [data-theme='interface'] {
@@ -120,15 +120,25 @@ body {
   100% { transform: translate(0, 0); }
 }
 
+/* Horizontal rails — allow vertical page scroll + horizontal pan (critical on phones) */
 .rail {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  touch-action: pan-x pinch-zoom;
-  scroll-snap-type: x mandatory;
+  overscroll-behavior-y: auto;
+  /* pan-x alone blocks vertical page scroll when finger is on the rail */
+  touch-action: pan-x pan-y;
+  scroll-snap-type: x proximity;
 }
 .rail::-webkit-scrollbar {
   display: none;
+}
+
+/* Dedicated overlay sheet scroller (mobile nav, modals) */
+.sheet-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 .contact-panel {
@@ -164,6 +174,10 @@ body {
   box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.14), 0 12px 40px rgba(0, 0, 0, 0.25);
   background: rgba(12, 18, 32, 0.95);
   transform: translateY(-1px);
+}
+.field-input[aria-invalid='true'] {
+  border-color: rgba(252, 211, 77, 0.55);
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.12);
 }
 
 /* Custom cursor: hide the native one only when ours is active */
@@ -203,10 +217,38 @@ body {
 
 .focus-ring:focus-visible,
 button:focus-visible,
-a:focus-visible {
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role='tab']:focus-visible,
+[role='option']:focus-visible {
   outline: 2px solid var(--color-signal-2);
   outline-offset: 3px;
   border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0.75rem;
+  z-index: 200;
+  transform: translateY(-160%);
+  border-radius: 0.5rem;
+  background: var(--color-bone);
+  color: var(--color-ink);
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease-cine);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
 }
 
 @keyframes shimmer {
@@ -275,6 +317,17 @@ a:focus-visible {
     -webkit-background-clip: unset;
     background-clip: unset;
   }
+  .field-input:focus {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Contact section: keep compose panel clear of fixed nav on jump links */
+#contact {
+  scroll-margin-top: 5.5rem;
 }
 
 /* Print-friendly resume (paper / PDF via browser print) */

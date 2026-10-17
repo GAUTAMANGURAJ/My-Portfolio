@@ -26,6 +26,7 @@ export default function Skills() {
 
       <div className="gutter grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-14">
         <div
+          data-lenis-prevent
           className="rail -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0"
           role="tablist"
           aria-label="Skill categories"

@@ -17,6 +17,8 @@ const contactSchema = z.object({
   email: z.string().email('Enter a valid email'),
   subject: z.string().max(120).optional(),
   message: z.string().min(10, 'Message should be at least 10 characters').max(2000),
+  /** Honeypot — leave empty. Bots that fill it get a silent fake success. */
+  company: z.string().max(120).optional(),
 });
 
 type ContactValues = z.infer<typeof contactSchema>;
@@ -74,9 +76,9 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
   const [toast, setToast] = useState<ToastState>(null);
   const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'start 0.25'] });
-  const yTitle = useTransform(scrollYProgress, [0, 1], [40, 0]);
-  const opacity = useTransform(scrollYProgress, [0.05, 0.65], [0, 1]);
-  const panelY = useTransform(scrollYProgress, [0.1, 0.85], [48, 0]);
+  const yTitle = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : 40, 0]);
+  const opacity = useTransform(scrollYProgress, [0.05, 0.65], [reduced ? 1 : 0, 1]);
+  const panelY = useTransform(scrollYProgress, [0.1, 0.85], [reduced ? 0 : 48, 0]);
   const toastMs = reduced ? 2200 : fine ? 9600 : 6400;
 
   useEffect(() => {
@@ -93,13 +95,33 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
     register,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors },
   } = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { name: '', email: '', subject: '', message: '' },
+    defaultValues: { name: '', email: '', subject: '', message: '', company: '' },
   });
 
+  const onInvalid = (errs: typeof errors) => {
+    const order: (keyof ContactValues)[] = ['name', 'email', 'subject', 'message'];
+    const first = order.find((k) => errs[k]);
+    if (first) setFocus(first);
+  };
+
   const onSubmit = async (values: ContactValues) => {
+    // Honeypot trip — pretend success, never hit the API
+    if (values.company?.trim()) {
+      setStatus('sent');
+      setToast({
+        tone: 'success',
+        title: 'Message sent',
+        detail: "Thanks — I'll reply to your email soon.",
+      });
+      reset();
+      window.setTimeout(() => setStatus('idle'), 1800);
+      return;
+    }
+
     setStatus('sending');
     const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
     const subject = values.subject?.trim() || `Portfolio message from ${values.name}`;
@@ -168,7 +190,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
     <section
       id="contact"
       ref={ref}
-      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-28 sm:px-6 sm:py-32"
+      className="relative flex min-h-[100svh] scroll-mt-[5.5rem] flex-col items-center justify-center overflow-x-hidden px-4 py-16 sm:scroll-mt-28 sm:px-6 sm:py-32"
     >
       {toastPortal}
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(55%_48%_at_50%_35%,rgba(45,212,191,0.16),transparent_68%)]" />
@@ -315,13 +337,14 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
 
           {/* Right: compose */}
           <motion.form
-            onSubmit={handleSubmit(onSubmit)}
-            className="relative p-6 sm:p-8 lg:p-10"
+            onSubmit={handleSubmit(onSubmit, onInvalid)}
+            className="relative p-5 sm:p-8 lg:p-10"
             variants={{
-              hidden: { opacity: 0, x: 24 },
+              hidden: { opacity: 0, x: reduced ? 0 : 24 },
               show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: EASE, staggerChildren: 0.08 } },
             }}
             noValidate
+            aria-busy={status === 'sending' || undefined}
           >
             <span aria-hidden className="pointer-events-none absolute right-5 top-5 h-4 w-4 border-r border-t border-signal/40" />
             <span aria-hidden className="pointer-events-none absolute bottom-5 left-5 h-4 w-4 border-b border-l border-signal/40" />
@@ -336,31 +359,68 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
               </span>
             </div>
 
+            <p className="sr-only" aria-live="polite">
+              {status === 'sending' ? 'Sending message' : status === 'sent' ? 'Message sent' : status === 'error' ? 'Send failed' : ''}
+            </p>
+
+            {/* Honeypot — hidden from humans */}
+            <div className="sr-only" aria-hidden>
+              <label htmlFor="contact-company">Company</label>
+              <input
+                id="contact-company"
+                {...register('company')}
+                tabIndex={-1}
+                autoComplete="off"
+                type="text"
+              />
+            </div>
+
             <div className="grid gap-5 sm:grid-cols-2 sm:gap-5">
-              <Field label="Name" error={errors.name?.message}>
-                <input {...register('name')} autoComplete="name" placeholder="Your name" className="field-input" />
-              </Field>
-              <Field label="Email" error={errors.email?.message}>
+              <Field id="contact-name" label="Name" error={errors.name?.message}>
                 <input
+                  id="contact-name"
+                  {...register('name')}
+                  autoComplete="name"
+                  placeholder="Your name"
+                  className="field-input"
+                  aria-invalid={errors.name ? true : undefined}
+                  aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                />
+              </Field>
+              <Field id="contact-email" label="Email" error={errors.email?.message}>
+                <input
+                  id="contact-email"
                   {...register('email')}
                   type="email"
                   autoComplete="email"
                   placeholder="you@company.com"
                   className="field-input"
+                  aria-invalid={errors.email ? true : undefined}
+                  aria-describedby={errors.email ? 'contact-email-error' : undefined}
                 />
               </Field>
             </div>
 
-            <Field label="Subject" error={errors.subject?.message} optional className="mt-5">
-              <input {...register('subject')} placeholder="What is this about?" className="field-input" />
+            <Field id="contact-subject" label="Subject" error={errors.subject?.message} optional className="mt-5">
+              <input
+                id="contact-subject"
+                {...register('subject')}
+                placeholder="What is this about?"
+                className="field-input"
+                aria-invalid={errors.subject ? true : undefined}
+                aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+              />
             </Field>
 
-            <Field label="Message" error={errors.message?.message} className="mt-5">
+            <Field id="contact-message" label="Message" error={errors.message?.message} className="mt-5">
               <textarea
+                id="contact-message"
                 {...register('message')}
                 rows={5}
                 placeholder="Share a bit about the role, project, or idea…"
-                className="field-input min-h-[150px] resize-y"
+                className="field-input min-h-[140px] resize-y sm:min-h-[150px]"
+                aria-invalid={errors.message ? true : undefined}
+                aria-describedby={errors.message ? 'contact-message-error' : undefined}
               />
             </Field>
 
@@ -371,14 +431,14 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
                 show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
               }}
             >
-              <Magnetic className="w-full max-w-sm self-center" strength={0.25}>
+              <Magnetic className="w-full max-w-sm self-center" strength={reduced ? 0 : 0.25}>
                 <motion.button
                   type="submit"
-                  disabled={status === 'sending'}
+                  disabled={status === 'sending' || status === 'sent'}
                   data-cursor="play"
                   className="group relative flex min-h-[3.35rem] w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-signal px-8 text-sm font-bold tracking-[0.16em] text-ink shadow-[0_0_48px_rgba(45,212,191,0.38)] transition hover:bg-signal-2 disabled:cursor-wait disabled:opacity-90"
-                  whileHover={reduced || status === 'sending' ? undefined : { scale: 1.02 }}
-                  whileTap={status === 'sending' ? undefined : { scale: 0.98 }}
+                  whileHover={reduced || status === 'sending' || status === 'sent' ? undefined : { scale: 1.02 }}
+                  whileTap={status === 'sending' || status === 'sent' ? undefined : { scale: 0.98 }}
                 >
                   <AnimatePresence mode="wait" initial={false}>
                     {status === 'sending' ? (
@@ -440,7 +500,7 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
         </div>
       </motion.div>
 
-      <footer className="relative z-10 mt-16 w-full max-w-5xl border-t border-white/10 px-2 pt-10 pb-[max(2rem,env(safe-area-inset-bottom))]">
+      <footer className="relative z-10 mt-12 w-full max-w-5xl border-t border-white/10 px-2 pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:mt-16 sm:pt-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="text-center sm:text-left">
             <div className="mb-2 flex items-center justify-center gap-2.5 sm:justify-start">
@@ -453,19 +513,31 @@ export default function FinalCTA({ onReplay }: { onReplay: () => void }) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-medium uppercase tracking-[0.18em] text-smoke sm:justify-end">
-            <button type="button" onClick={() => scrollTo(0, { offset: 0 })} className="transition hover:text-bone">
-              ↑ Back to top
+          <nav
+            aria-label="Footer"
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.18em] text-smoke sm:justify-end sm:gap-x-5"
+          >
+            <button type="button" onClick={() => scrollTo('#originals')} className="transition hover:text-bone">
+              Work
+            </button>
+            <button type="button" onClick={() => scrollTo('#story')} className="transition hover:text-bone">
+              Resume
+            </button>
+            <button type="button" onClick={() => scrollTo('#contact')} className="transition hover:text-bone">
+              Contact
             </button>
             <span aria-hidden className="hidden h-3 w-px bg-white/15 sm:block" />
-            <button type="button" onClick={onReplay} className="transition hover:text-bone">
-              Replay opening
+            <button type="button" onClick={() => scrollTo(0, { offset: 0 })} className="transition hover:text-bone">
+              ↑ Top
             </button>
-          </div>
+            <button type="button" onClick={onReplay} className="transition hover:text-bone">
+              Replay
+            </button>
+          </nav>
         </div>
 
         <p className="mt-8 border-t border-white/[0.06] pt-5 text-center text-[11px] leading-relaxed text-smoke/90 sm:text-left">
-          © {new Date().getFullYear()} {profile.displayName}. All rights reserved.
+          © {new Date().getFullYear()} {profile.displayName}. Built with care — privacy-safe case studies.
         </p>
       </footer>
     </section>
@@ -644,27 +716,33 @@ function AirplaneBannerToast({
 }
 
 function Field({
+  id,
   label,
   error,
   optional,
   children,
   className = '',
 }: {
+  id: string;
   label: string;
   error?: string;
   optional?: boolean;
   children: ReactNode;
   className?: string;
 }) {
+  const errorId = `${id}-error`;
   return (
     <motion.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
-        show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: EASE } },
+        hidden: { opacity: 0, y: 18 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
       }}
     >
-      <label className="mb-2.5 flex items-baseline justify-between text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">
+      <label
+        htmlFor={id}
+        className="mb-2.5 flex items-baseline justify-between text-[11px] font-semibold uppercase tracking-[0.24em] text-mist"
+      >
         <span>{label}</span>
         {optional && <span className="normal-case tracking-normal text-smoke">optional</span>}
       </label>
@@ -672,6 +750,8 @@ function Field({
       <AnimatePresence>
         {error && (
           <motion.p
+            id={errorId}
+            role="alert"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}

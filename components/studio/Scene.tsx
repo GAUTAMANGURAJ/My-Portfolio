@@ -26,7 +26,7 @@ export default function Scene({ id, children, className = '' }: { id: string; ch
       id={id}
       ref={ref}
       style={lightMotion ? { opacity } : { opacity, scale, y }}
-      className={`relative scroll-mt-24 py-16 sm:py-24 [content-visibility:auto] [contain-intrinsic-size:1px_720px] ${className}`}
+      className={`relative scroll-mt-[5.5rem] py-14 sm:scroll-mt-28 sm:py-20 lg:py-24 [content-visibility:auto] [contain-intrinsic-size:1px_720px] ${className}`}
     >
       {children}
     </motion.section>

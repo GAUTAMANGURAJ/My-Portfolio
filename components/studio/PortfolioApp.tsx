@@ -6,11 +6,11 @@ import { viewerProfiles, type ProfileId, type Project } from '@/lib/content/port
 import { SmoothScrollProvider, useSmoothScroll } from '@/hooks/smoothScroll';
 import { useFinePointer } from '@/hooks/useMedia';
 import OpeningSequence from './OpeningSequence';
-import ProfileSelector from './ProfileSelector';
 import PortfolioHome from './PortfolioHome';
-import ScrollProgress from './ScrollProgress';
 import { EASE } from './fx';
 
+const ProfileSelector = lazy(() => import('./ProfileSelector'));
+const ScrollProgress = lazy(() => import('./ScrollProgress'));
 const CustomCursor = lazy(() => import('./CustomCursor'));
 const HighlightsReel = lazy(() => import('./HighlightsReel'));
 const ProjectModal = lazy(() => import('./ProjectModal'));
@@ -119,13 +119,21 @@ function StudioShell() {
           <CustomCursor />
         </Suspense>
       )}
-      {stage === 'home' && <ScrollProgress />}
+      {stage === 'home' && (
+        <Suspense fallback={null}>
+          <ScrollProgress />
+        </Suspense>
+      )}
 
       <AnimatePresence>
         {stage === 'opening' && (
           <OpeningSequence key="opening" onDone={() => setStage('profiles')} />
         )}
-        {stage === 'profiles' && <ProfileSelector key="profiles" onPick={pickProfile} />}
+        {stage === 'profiles' && (
+          <Suspense fallback={null}>
+            <ProfileSelector key="profiles" onPick={pickProfile} />
+          </Suspense>
+        )}
       </AnimatePresence>
 
       {stage === 'home' && (
@@ -135,6 +143,9 @@ function StudioShell() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.85, ease: EASE }}
         >
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
           <PortfolioHome
             profileId={profileId}
             onSwitch={pickProfile}

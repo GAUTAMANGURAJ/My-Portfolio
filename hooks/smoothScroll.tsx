@@ -15,8 +15,9 @@ type ScrollApi = {
 const ScrollCtx = createContext<ScrollApi | null>(null);
 
 /**
- * Aggressive cinematic Lenis — longer inertia, synced scroll events for
- * Framer Motion useScroll / section progress.
+ * Smooth scroll via Lenis on fine-pointer desktops only.
+ * Touch / coarse pointers use native scrolling so horizontal rails and
+ * overlay sheets (mobile nav) keep reliable pan gestures.
  */
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const reduced = useReducedMotionPref();
@@ -24,26 +25,29 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
   const locks = useRef(0);
   const progressRef = useRef(0);
+  const lockScrollY = useRef(0);
+
+  // Lenis only on desktop-like pointers (not phones / tablets)
+  const useLenis = !reduced && !coarse;
 
   useEffect(() => {
-    if (reduced) return;
+    if (!useLenis) {
+      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+      return;
+    }
 
     const lenis = new Lenis({
-      // Softer inertia on touch devices for less jank
-      duration: coarse ? 1.05 : 1.55,
+      duration: 1.55,
       smoothWheel: true,
-      wheelMultiplier: coarse ? 1 : 0.85,
+      wheelMultiplier: 0.85,
       touchMultiplier: 1,
-      // Keep native touch for horizontal rails; Lenis still smooths vertical page scroll
       syncTouch: false,
       easing: (t) => 1 - Math.pow(1 - t, 4),
     });
     lenisRef.current = lenis;
 
-    // Keep Framer / IntersectionObserver in sync with Lenis virtual scroll
     lenis.on('scroll', ({ progress }) => {
       progressRef.current = progress;
-      // Nudge listeners that only watch native scroll
       window.dispatchEvent(new CustomEvent('lenis-scroll', { detail: { progress } }));
     });
 
@@ -58,39 +62,56 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelAnimationFrame(raf);
-      document.documentElement.classList.remove('lenis', 'lenis-smooth');
+      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reduced, coarse]);
+  }, [useLenis]);
 
-  const scrollTo = useCallback<ScrollApi['scrollTo']>((target, opts = {}) => {
-    const offset = opts.offset ?? -72;
-    const duration = opts.duration ?? (coarse ? 1.05 : 1.45);
-    const el = typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target;
-    if (el === null) return;
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(el, { offset, immediate: opts.immediate, duration });
-    } else {
-      const top = typeof el === 'number' ? el : el.getBoundingClientRect().top + window.scrollY + offset;
-      window.scrollTo({ top, behavior: opts.immediate ? 'auto' : 'smooth' });
-    }
-  }, [coarse]);
+  const scrollTo = useCallback<ScrollApi['scrollTo']>(
+    (target, opts = {}) => {
+      const offset = opts.offset ?? -72;
+      const duration = opts.duration ?? (coarse ? 0.85 : 1.45);
+      const el = typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target;
+      if (el === null) return;
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(el, { offset, immediate: opts.immediate, duration });
+      } else {
+        const top = typeof el === 'number' ? el : el.getBoundingClientRect().top + window.scrollY + offset;
+        window.scrollTo({ top, behavior: opts.immediate ? 'auto' : 'smooth' });
+      }
+    },
+    [coarse],
+  );
 
   const lock = useCallback(() => {
     locks.current += 1;
+    if (locks.current > 1) return;
     lenisRef.current?.stop();
-    document.documentElement.style.overflow = 'hidden';
+    lockScrollY.current = window.scrollY;
     document.documentElement.classList.add('lenis-stopped');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${lockScrollY.current}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
   }, []);
 
   const unlock = useCallback(() => {
     locks.current = Math.max(0, locks.current - 1);
-    if (locks.current === 0) {
-      lenisRef.current?.start();
-      document.documentElement.style.overflow = '';
-      document.documentElement.classList.remove('lenis-stopped');
-    }
+    if (locks.current !== 0) return;
+    lenisRef.current?.start();
+    document.documentElement.classList.remove('lenis-stopped');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, lockScrollY.current);
   }, []);
 
   const getProgress = useCallback(() => progressRef.current, []);

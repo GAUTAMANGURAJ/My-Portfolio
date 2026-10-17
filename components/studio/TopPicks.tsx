@@ -13,7 +13,7 @@ export default function TopPicks() {
     <>
       <SectionHeading kicker="From the work" title="Highlights" />
       <div className="group/rail relative">
-        <div ref={rail} className="rail gutter flex snap-x snap-mandatory gap-2 overflow-x-auto py-6">
+        <div ref={rail} data-lenis-prevent className="rail gutter flex gap-2 overflow-x-auto py-6">
           {topPicks.map((pick, i) => (
             <motion.div
               key={pick.title}

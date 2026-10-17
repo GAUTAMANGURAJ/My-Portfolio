@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { profile, sectionMeta, viewerProfiles, type ProfileId, type SectionId } from '@/lib/content/portfolio';
-import { useSmoothScroll } from '@/hooks/smoothScroll';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { useScrollLock, useSmoothScroll } from '@/hooks/smoothScroll';
 import { ProfileAvatar } from './ProfileSelector';
 import { StudioMark } from './Poster';
 import { EASE } from './fx';
@@ -40,7 +41,10 @@ export default function Navbar({
   const [active, setActive] = useState<SectionId | null>(null);
   const [theme, setTheme] = useState<ThemeId>('interface');
   const pathRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const current = viewerProfiles.find((p) => p.id === profileId)!;
+  useScrollLock(menuOpen);
+  useFocusTrap(menuOpen, menuRef);
 
   useEffect(() => {
     setTheme(readStoredTheme());
@@ -98,13 +102,26 @@ export default function Navbar({
     };
   }, [pathOpen]);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
   const ui = (
     <>
-      <header className="gutter pointer-events-none fixed inset-x-0 top-0 z-[80]">
+      <header
+        className={`gutter pointer-events-none fixed inset-x-0 top-0 pt-[env(safe-area-inset-top)] ${
+          menuOpen ? 'z-[100]' : 'z-[80]'
+        }`}
+      >
         <div
-          className={`pointer-events-auto relative mx-auto mt-3 flex h-14 max-w-6xl items-center justify-between gap-3 rounded-2xl border px-3 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-[background-color,border-color] duration-300 sm:h-[3.75rem] sm:px-4 ${
-            scrolled
-              ? 'border-white/14 bg-ink/92'
+          className={`pointer-events-auto relative mx-auto mt-2 flex h-14 max-w-6xl items-center justify-between gap-3 rounded-2xl border px-3 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-[background-color,border-color] duration-300 sm:mt-3 sm:h-[3.75rem] sm:px-4 ${
+            scrolled || menuOpen
+              ? 'border-white/14 bg-ink/95'
               : 'border-white/10 bg-ink/78'
           }`}
         >
@@ -154,6 +171,14 @@ export default function Navbar({
                 </button>
               );
             })}
+            <button
+              type="button"
+              onClick={() => scrollTo('#contact')}
+              data-cursor="link"
+              className="rounded-full px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-mist transition hover:text-bone"
+            >
+              Contact
+            </button>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-2.5">
@@ -312,67 +337,92 @@ export default function Navbar({
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="fixed inset-0 z-[70] bg-ink/96 pt-24 backdrop-blur-2xl lg:hidden"
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="fixed inset-0 z-[90] flex flex-col bg-ink/98 lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className="gutter mx-auto flex max-w-lg flex-col gap-6">
-              <div>
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-smoke">Path</p>
-                <ul className="grid grid-cols-2 gap-2">
-                  {viewerProfiles.map((p) => {
-                    const selected = p.id === profileId;
-                    return (
-                      <li key={p.id}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onSwitch(p.id);
-                            setMenuOpen(false);
-                          }}
-                          className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${
-                            selected
-                              ? 'border-signal/40 bg-signal/10'
-                              : 'border-white/10 bg-ink-2/60 hover:border-white/20'
-                          }`}
-                        >
-                          <ProfileAvatar id={p.id} size="sm" />
-                          <span className="min-w-0">
-                            <span className="block text-sm font-semibold text-bone">{p.name}</span>
-                            <span className="block truncate text-[10px] text-smoke">{p.blurb}</span>
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+            {/* Leave room for the fixed header + hamburger */}
+            <div className="shrink-0" style={{ height: 'calc(env(safe-area-inset-top, 0px) + 4.75rem)' }} aria-hidden />
 
-              <nav className="flex flex-col gap-2" aria-label="Mobile">
-                {order.map((id) => (
+            {/* This is the only scrollable region — must stay independent of body lock */}
+            <div
+              data-lenis-prevent
+              className="sheet-scroll gutter mx-auto min-h-0 w-full max-w-lg flex-1 overflow-y-auto overscroll-y-contain pb-[max(2.5rem,env(safe-area-inset-bottom))]"
+            >
+              <div className="flex flex-col gap-5">
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-smoke">Path</p>
+                  <ul className="grid grid-cols-2 gap-2">
+                    {viewerProfiles.map((p) => {
+                      const selected = p.id === profileId;
+                      return (
+                        <li key={p.id}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onSwitch(p.id);
+                              setMenuOpen(false);
+                            }}
+                            className={`flex min-h-12 w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${
+                              selected
+                                ? 'border-signal/40 bg-signal/10'
+                                : 'border-white/10 bg-ink-2/60 hover:border-white/20'
+                            }`}
+                          >
+                            <ProfileAvatar id={p.id} size="sm" />
+                            <span className="min-w-0">
+                              <span className="block text-sm font-semibold text-bone">{p.name}</span>
+                              <span className="block truncate text-[10px] text-smoke">{p.blurb}</span>
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                <nav className="flex flex-col gap-2" aria-label="Mobile">
+                  {order.map((id) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className="min-h-12 rounded-xl border border-white/10 bg-ink-2/50 px-4 py-3.5 text-left transition hover:border-signal/30 hover:bg-ink-2"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        // Defer so unlock restores scroll position before Lenis/native jump
+                        window.setTimeout(() => scrollTo(`#${id}`), 40);
+                      }}
+                    >
+                      <span className="text-base font-semibold text-bone">{sectionMeta[id].nav}</span>
+                      <span className="mt-0.5 block text-xs text-smoke">{sectionMeta[id].meta}</span>
+                    </button>
+                  ))}
                   <button
-                    key={id}
                     type="button"
-                    className="rounded-xl border border-white/10 bg-ink-2/50 px-4 py-3.5 text-left transition hover:border-signal/30 hover:bg-ink-2"
+                    className="min-h-12 rounded-xl border border-signal/35 bg-signal/10 px-4 py-3.5 text-left transition hover:border-signal/50 hover:bg-signal/15"
                     onClick={() => {
                       setMenuOpen(false);
-                      scrollTo(`#${id}`);
+                      window.setTimeout(() => scrollTo('#contact'), 40);
                     }}
                   >
-                    <span className="text-base font-semibold text-bone">{sectionMeta[id].nav}</span>
-                    <span className="mt-0.5 block text-xs text-smoke">{sectionMeta[id].meta}</span>
+                    <span className="text-base font-semibold text-bone">Contact</span>
+                    <span className="mt-0.5 block text-xs text-smoke">Message · LinkedIn · email</span>
                   </button>
-                ))}
-              </nav>
+                </nav>
 
-              <button
-                type="button"
-                onClick={() => setTheme((t) => (t === 'interface' ? 'ember' : 'interface'))}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/12 px-4 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-mist"
-              >
-                Accent · {theme === 'interface' ? 'Teal' : 'Ember'}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme((t) => (t === 'interface' ? 'ember' : 'interface'))}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/12 px-4 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-mist"
+                >
+                  Accent · {theme === 'interface' ? 'Teal' : 'Ember'}
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

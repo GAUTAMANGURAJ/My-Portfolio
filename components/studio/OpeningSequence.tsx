@@ -51,6 +51,7 @@ export default function OpeningSequence({ onDone }: { onDone: () => void }) {
       exit={{ opacity: 0, filter: 'blur(16px)', scale: 1.02 }}
       transition={{ duration: 0.85, ease: EASE }}
       role="dialog"
+      aria-modal="true"
       aria-label="Blueprint to reality opening"
     >
       {/* Blueprint field */}

@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion';
 import { introSlides, profile } from '@/lib/content/portfolio';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollLock } from '@/hooks/smoothScroll';
 import { useReducedMotionPref } from '@/hooks/useMedia';
 import { EASE } from './fx';
@@ -15,10 +16,17 @@ const SLIDE_MS = 3600;
 export default function HighlightsReel({ onClose }: { onClose: () => void }) {
   useScrollLock(true);
   const reduced = useReducedMotionPref();
+  const root = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  useFocusTrap(true, root);
   const [phase, setPhase] = useState<'zoom' | 'reel' | 'end'>(reduced ? 'reel' : 'zoom');
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const progress = useMotionValue(0);
+
+  useEffect(() => {
+    closeBtn.current?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     if (phase !== 'zoom') return;
@@ -83,6 +91,7 @@ export default function HighlightsReel({ onClose }: { onClose: () => void }) {
 
   return (
     <motion.div
+      ref={root}
       className="fixed inset-0 z-[130] overflow-hidden bg-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -204,9 +213,11 @@ export default function HighlightsReel({ onClose }: { onClose: () => void }) {
           <span className="hidden text-[11px] tracking-[0.2em] text-smoke sm:block">SPACE · ← → · ESC</span>
         </div>
         <button
+          ref={closeBtn}
           type="button"
           onClick={onClose}
           data-cursor="close"
+          aria-label="Close highlights reel"
           className="rounded-full bg-bone px-5 py-2.5 text-xs font-bold tracking-[0.18em] text-ink transition hover:bg-white"
         >
           BACK TO BROWSE

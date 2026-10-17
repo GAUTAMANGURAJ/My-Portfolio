@@ -2,7 +2,16 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { achievements, certifications, education, experience, profile, projects, skillCategories } from '@/lib/content/portfolio';
+import {
+  achievements,
+  certifications,
+  education,
+  experience,
+  profile,
+  projects,
+  skillCategories,
+  workingPrinciples,
+} from '@/lib/content/portfolio';
 import { EASE, Magnetic, SectionHeading } from './fx';
 
 /** Resume preview plus view / download / print actions. */
@@ -30,10 +39,10 @@ export default function ResumeViewer({ onView }: { onView: () => void }) {
         </motion.div>
 
         <div className="no-print lg:sticky lg:top-28 lg:self-start">
-          <p className="font-serif text-3xl italic leading-tight text-bone">One page. Full picture.</p>
+          <p className="font-serif text-3xl italic leading-tight text-bone">One page. Proof first.</p>
           <p className="mt-3 text-sm leading-relaxed text-mist">
-            Education, experience, projects, achievements and {certifications.length} certification
-            {certifications.length === 1 ? '' : 's'} — preview here, download a PDF, or print.
+            Same narrative as the case studies — metrics, ownership, and {certifications.length} certification
+            {certifications.length === 1 ? '' : 's'}. Preview here, download PDF, or print.
           </p>
           <div className="mt-6 flex flex-col gap-3">
             <Magnetic className="w-full">
@@ -139,6 +148,8 @@ export function ResumeSheet() {
         </div>
       </header>
 
+      <p className="mb-6 text-xs leading-relaxed text-mist sm:text-[13px]">{profile.intro}</p>
+
       <div className="grid gap-x-10 md:grid-cols-[1.4fr_1fr]">
         <div>
           <H>Education</H>
@@ -171,6 +182,9 @@ export function ResumeSheet() {
                 </p>
                 <p className="text-xs text-smoke">{x.period}</p>
               </div>
+              <p className="mt-0.5 text-[11px] text-smoke">
+                {x.place}
+              </p>
               <ul className="mt-2 space-y-1.5">
                 {x.points.map((p) => (
                   <li key={p} className="flex gap-2 text-xs leading-relaxed text-mist">
@@ -182,19 +196,29 @@ export function ResumeSheet() {
             </div>
           ))}
 
-          <H>Projects</H>
+          <H>Selected work</H>
           {projects.map((p) => (
             <div key={p.id} className="mb-3">
               <div className="flex flex-wrap justify-between gap-x-3">
                 <p className="text-sm font-semibold text-bone">{p.title}</p>
                 <p className="text-xs text-smoke">{p.year}</p>
               </div>
+              <p className="text-[11px] font-semibold text-signal-2">{p.caseStudy.proof}</p>
               <p className="text-xs text-mist">{p.stack.join(', ')}</p>
             </div>
           ))}
         </div>
 
         <div>
+          <H>How I work</H>
+          <ul className="mb-1 space-y-2">
+            {workingPrinciples.map((p) => (
+              <li key={p.title} className="text-xs leading-relaxed text-mist">
+                <span className="font-semibold text-bone">{p.title}.</span> {p.detail}
+              </li>
+            ))}
+          </ul>
+
           <H>Skills</H>
           <div className="space-y-2">
             {skillCategories.map((c) => (

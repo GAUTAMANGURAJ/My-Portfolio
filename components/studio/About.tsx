@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { education, experience, profile, seasons, storyBlurb } from '@/lib/content/portfolio';
+import { chapters, education, experience, profile, storyBlurb, workingPrinciples } from '@/lib/content/portfolio';
 import { EASE, RevealText, SectionHeading, Tilt } from './fx';
 
 export default function About() {
@@ -46,7 +46,7 @@ export default function About() {
                   <p className="font-display text-3xl leading-none text-bone">{profile.displayName}</p>
                 </div>
                 <span className="rounded border border-white/30 px-1.5 text-[10px] font-bold text-bone">
-                  {seasons.length} chapters
+                  {chapters.length} chapters
                 </span>
               </div>
             </div>
@@ -108,6 +108,18 @@ export default function About() {
                 </ul>
               </div>
             </Tilt>
+          </div>
+
+          <div className="mt-8">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-smoke">How I work</p>
+            <ul className="space-y-3">
+              {workingPrinciples.map((p) => (
+                <li key={p.title} className="rounded-xl border border-white/10 bg-ink-2/80 px-4 py-3">
+                  <p className="text-sm font-semibold text-bone">{p.title}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-mist">{p.detail}</p>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="mt-8">

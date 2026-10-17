@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { profile, sectionMeta, viewerProfiles, type ProfileId } from '@/lib/content/portfolio';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useFinePointer, useReducedMotionPref } from '@/hooks/useMedia';
 import { EASE, Magnetic } from './fx';
 
@@ -43,6 +44,8 @@ export function ProfileAvatar({ id, size = 'lg' }: { id: ProfileId; size?: 'sm' 
 export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) => void }) {
   const fine = useFinePointer();
   const reduced = useReducedMotionPref();
+  const root = useRef<HTMLDivElement>(null);
+  useFocusTrap(true, root);
   const [locked, setLocked] = useState<ProfileId | null>(null);
 
   useEffect(() => {
@@ -61,12 +64,15 @@ export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) =>
 
   return (
     <motion.div
-      className="fixed inset-0 z-[110] flex flex-col items-center justify-center overflow-y-auto bg-ink px-4 py-16"
+      ref={root}
+      data-lenis-prevent
+      className="sheet-scroll fixed inset-0 z-[110] flex flex-col items-center justify-center overflow-y-auto overscroll-y-contain bg-ink px-4 py-16"
       initial={{ opacity: 0, scale: 1.03, filter: 'blur(12px)' }}
       animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
       exit={{ opacity: 0, scale: 1.04, filter: 'blur(12px)' }}
       transition={{ duration: 0.75, ease: EASE }}
       role="dialog"
+      aria-modal="true"
       aria-label="Choose how to enter the portfolio"
       aria-busy={locked ? true : undefined}
     >
@@ -118,7 +124,7 @@ export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) =>
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.15 }}
       >
-        Same work — different entry point.
+        Same proof — pick the shortest path for you. Recruiters: start with Resume.
       </motion.p>
 
       <motion.ul
@@ -185,9 +191,13 @@ export default function ProfileSelector({ onPick }: { onPick: (id: ProfileId) =>
                     transition={{ duration: 0.5, ease: EASE }}
                   >
                     <ProfileAvatar id={p.id} />
-                    {p.id === 'gautam' && (
-                      <span className="absolute -right-2 -top-2 rounded-full bg-gold px-2 py-0.5 text-[9px] font-bold tracking-[0.14em] text-ink">
-                        FULL
+                    {p.badge && (
+                      <span
+                        className={`absolute -right-2 -top-2 rounded-full px-2 py-0.5 text-[9px] font-bold tracking-[0.14em] text-ink ${
+                          p.id === 'recruiter' ? 'bg-signal' : 'bg-gold'
+                        }`}
+                      >
+                        {p.badge}
                       </span>
                     )}
                     {isLocked && (

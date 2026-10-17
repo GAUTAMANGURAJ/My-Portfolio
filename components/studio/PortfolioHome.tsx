@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { viewerProfiles, type ProfileId, type Project, type SectionId } from '@/lib/content/portfolio';
 import { resolveHashTarget } from '@/lib/hashTargets';
 import { useSmoothScroll } from '@/hooks/smoothScroll';
@@ -8,14 +9,16 @@ import Navbar from './Navbar';
 import Hero from './Hero';
 import ExploreRail from './ExploreRail';
 import Scene from './Scene';
-import About from './About';
-import Journey from './Journey';
-import SelectedWork from './SelectedWork';
-import TopPicks from './TopPicks';
-import Skills from './Skills';
-import Achievements from './Achievements';
-import ResumeViewer from './ResumeViewer';
-import FinalCTA from './FinalCTA';
+
+/** Below-fold sections — code-split so the hero path stays lean. */
+const About = dynamic(() => import('./About'));
+const Journey = dynamic(() => import('./Journey'));
+const SelectedWork = dynamic(() => import('./SelectedWork'));
+const TopPicks = dynamic(() => import('./TopPicks'));
+const Skills = dynamic(() => import('./Skills'));
+const Achievements = dynamic(() => import('./Achievements'));
+const ResumeViewer = dynamic(() => import('./ResumeViewer'));
+const FinalCTA = dynamic(() => import('./FinalCTA'));
 
 type Props = {
   profileId: ProfileId;
@@ -66,7 +69,7 @@ export default function PortfolioHome({
   return (
     <>
       <Navbar order={order} profileId={profileId} onSwitch={onSwitch} />
-      <main>
+      <main id="main">
         <Hero key={`hero-${profileId}`} onPlay={onPlay} onResume={onResume} profileId={profileId} />
         <ExploreRail order={order} />
         {order.map((id) => (

@@ -6,7 +6,7 @@ Software Engineer portfolio (frontend systems) — Next.js static export on GitH
 
 ```bash
 npm install
-cp .env.example .env.local   # add Web3Forms key for inbox delivery
+cp .env.example .env.local   # add Web3Forms + GoatCounter codes
 npm run dev
 ```
 
@@ -20,6 +20,7 @@ Open [http://localhost:3000/gautam-m-a-portfolio](http://localhost:3000/gautam-m
 | `npm run build` | Static export → `out/` |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript |
+| `npm run ci` | typecheck + lint + build (local CI) |
 
 ## Contact form (Web3Forms)
 
@@ -32,6 +33,8 @@ Without the key, the form falls back to the visitor’s mail app.
 ## Deploy (GitHub Pages)
 
 Push to `main` — `.github/workflows/deploy.yml` builds `out/` and deploys.
+
+Manual redeploy: **Actions → Deploy Next.js Portfolio to GitHub Pages → Run workflow**.
 
 Live URL pattern: `https://<user>.github.io/gautam-m-a-portfolio/`
 
@@ -57,11 +60,11 @@ Theme accent (Teal / Ember) persists in `localStorage`.
 Privacy-light, **no cookies**. Recommended free option: [GoatCounter](https://www.goatcounter.com).
 
 1. Sign up at GoatCounter → create a site for your Pages URL  
-2. Your code is the site subdomain (e.g. `gautam` → `gautam.goatcounter.com`)  
+2. Your code is the site subdomain (e.g. `gautam-ma` → `gautam-ma.goatcounter.com`)  
 3. Local `.env.local`:
 
 ```bash
-NEXT_PUBLIC_GOATCOUNTER_CODE=your-code-here
+NEXT_PUBLIC_GOATCOUNTER_CODE=gautam-ma
 ```
 
 4. GitHub → Settings → Secrets → Actions → add `NEXT_PUBLIC_GOATCOUNTER_CODE`  
@@ -74,17 +77,27 @@ If neither env is set, no analytics script loads.
 
 On the Resume section, use **Print resume** (or browser Print). Styles hide chrome and print the on-page resume sheet for paper/PDF.
 
-## Deferred (not in Phase 6)
+## Resume PDF
 
-- i18n (Tamil/English)
-- Blog / notes section
+On-page Resume (and Print) is the source of truth from `lib/content/portfolio.ts`.  
+If you update experience/projects there, re-export `public/assets/resume/Gautam_MA_Resume.pdf` to match.
+
+## Next (optional)
+
+- Phase 11+: blog / Tamil-English i18n / custom domain (₹0 preferred for now)
 
 ## Performance notes
 
 - Responsive portrait assets: `portrait-hero-480/640.jpg` + full `portrait-hero.jpg`
 - Touch devices: grain/streaks off, lighter section motion, softer Lenis
 - Heavy overlays (cursor, modals, highlights) load lazily
-- Next.js major upgrade deferred (static export + `basePath` regression risk)
+- Below-fold sections code-split via `next/dynamic`
+- Stack: Next.js 14.2 (static export + `basePath`) — Next 15 / React 19 deferred
+
+## CI
+
+- `.github/workflows/ci.yml` — typecheck, lint, build on PR / push to `main`
+- Deploy workflow also runs typecheck + lint before Pages upload
 
 ## Project layout
 
@@ -92,7 +105,7 @@ On the Resume section, use **Print resume** (or browser Print). Styles hide chro
 |------|---------|
 | `components/studio/` | Live portfolio UI |
 | `lib/content/portfolio.ts` | All facts / copy / projects |
-| `components/ui/` | Unused shadcn scaffold (ignore) |
+| `hooks/` | Scroll, media, focus-trap helpers |
 | `app/` | Next.js App Router entry |
 
 ## Content

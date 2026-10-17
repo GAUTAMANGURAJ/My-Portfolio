@@ -141,6 +141,17 @@ export function ProjectPoster({ project, className = '' }: { project: Project; c
             <circle cx="160" cy="110" r="4" fill={a} fillOpacity="0.85" stroke="none" />
           </g>
         )}
+
+        {project.motif === 'blueprint' && (
+          <g fill="none" stroke={a} transform="translate(120 55)">
+            <rect x="0" y="0" width="220" height="160" rx="10" strokeWidth="1.4" strokeOpacity="0.35" />
+            <path d="M0 40 h220 M0 80 h220 M0 120 h220 M55 0 v160 M110 0 v160 M165 0 v160" strokeWidth="1" strokeOpacity="0.22" />
+            <rect x="70" y="52" width="80" height="56" rx="6" strokeWidth="2" strokeOpacity="0.7" />
+            <path d="M70 80 h80 M110 52 v56" strokeWidth="1.2" strokeOpacity="0.45" />
+            <circle cx="30" cy="20" r="3" fill={a} fillOpacity="0.8" stroke="none" />
+            <circle cx="190" cy="140" r="3" fill={a} fillOpacity="0.55" stroke="none" />
+          </g>
+        )}
       </svg>
     </PosterBackdrop>
   );
@@ -212,6 +223,3 @@ export function StudioMark({ className = '' }: { className?: string }) {
     </span>
   );
 }
-
-/** @deprecated Prefer StudioMark */
-export const SeriesMark = StudioMark;

@@ -8,8 +8,8 @@ import { EASE, RevealText } from './fx';
 import ProjectCard from './ProjectCard';
 
 /**
- * WORK — desktop pins and scrolls sideways via Lenis/scroll progress.
- * Mobile / reduced motion: native horizontal snap rail with touch scrolling.
+ * WORK — desktop pins and scrolls sideways via scroll progress.
+ * Mobile / reduced motion: native horizontal rail that does not trap vertical page scroll.
  */
 export default function SelectedWork({ onOpen }: { onOpen: (p: Project) => void }) {
   const desktop = useDesktop();
@@ -25,10 +25,10 @@ function Intro() {
       </p>
       <RevealText as="h2" text="SELECTED WORK" className="font-display text-[clamp(2.8rem,8vw,7rem)] leading-[0.88] text-bone" />
       <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-mist">
-        Enterprise platforms and shipped product work — robotics operations SaaS, ESG intelligence, contracts, and a financial-accounts site. Open any card for the full story.
+        Enterprise platforms and shipped product work — robotics SaaS, ESG, contracts, orchestration, and this public portfolio. Open any card for the full case study.
       </p>
       <p className="mt-6 hidden text-xs tracking-[0.24em] text-smoke lg:block">SCROLL TO BROWSE →</p>
-      <p className="mt-4 text-xs tracking-[0.2em] text-smoke lg:hidden">SWIPE TO BROWSE →</p>
+      <p className="mt-4 text-xs tracking-[0.2em] text-smoke lg:hidden">Swipe sideways for projects · scroll page normally</p>
     </div>
   );
 }
@@ -40,7 +40,7 @@ function Outro() {
       target="_blank"
       rel="noreferrer"
       data-cursor="link"
-      className="group flex aspect-[3/4] w-[72vw] shrink-0 snap-center flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-white/15 text-center transition hover:border-signal/60 sm:w-[44vw] lg:aspect-auto lg:h-[66vh] lg:w-[24vw] lg:snap-start"
+      className="group flex aspect-[3/4] w-[78vw] shrink-0 snap-start flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-white/15 text-center transition hover:border-signal/60 sm:w-[44vw] lg:aspect-auto lg:h-[66vh] lg:w-[24vw]"
     >
       <motion.span
         className="flex h-16 w-16 items-center justify-center rounded-full border border-white/25 text-2xl text-bone transition group-hover:border-signal group-hover:text-signal"
@@ -111,36 +111,23 @@ function PinnedWork({ onOpen }: { onOpen: (p: Project) => void }) {
 }
 
 function RailWork({ onOpen }: { onOpen: (p: Project) => void }) {
-  const railRef = useRef<HTMLDivElement>(null);
-
   return (
-    <div className="py-6">
-      <div className="gutter mb-6">
+    <div className="py-4 sm:py-6">
+      <div className="gutter mb-5 sm:mb-6">
         <Intro />
       </div>
-      <motion.div
-        ref={railRef}
-        className="rail gutter flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-8 touch-pan-x"
+      <div
+        data-lenis-prevent
+        className="rail gutter flex gap-3 overflow-x-auto pb-6 sm:gap-4 sm:pb-8"
         style={{ WebkitOverflowScrolling: 'touch' }}
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-10% 0px' }}
-        transition={{ duration: 0.85, ease: EASE }}
       >
         {projects.map((p, i) => (
-          <motion.div
-            key={p.id}
-            className="snap-center sm:snap-start"
-            initial={{ opacity: 0, scale: 0.94, x: 40 }}
-            whileInView={{ opacity: 1, scale: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.55, ease: EASE, delay: Math.min(i * 0.06, 0.24) }}
-          >
+          <div key={p.id} className="snap-start">
             <ProjectCard project={p} index={i} onOpen={() => onOpen(p)} />
-          </motion.div>
+          </div>
         ))}
         <Outro />
-      </motion.div>
+      </div>
     </div>
   );
 }

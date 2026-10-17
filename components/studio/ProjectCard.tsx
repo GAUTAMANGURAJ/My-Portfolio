@@ -8,11 +8,11 @@ import { ProjectPoster } from './Poster';
 export default function ProjectCard({ project, index, onOpen }: { project: Project; index: number; onOpen: () => void }) {
   return (
     <motion.article
-      className="w-[84vw] shrink-0 snap-start sm:w-[62vw] lg:w-[46vw] xl:w-[42vw]"
-      initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '0px -10% 0px 0px' }}
-      transition={{ duration: 0.9, delay: index * 0.08, ease: EASE }}
+      className="w-[78vw] max-w-[22rem] shrink-0 snap-start sm:w-[62vw] sm:max-w-none lg:w-[46vw] xl:w-[42vw]"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px -8% 0px 0px', amount: 0.2 }}
+      transition={{ duration: 0.55, delay: Math.min(index * 0.05, 0.2), ease: EASE }}
     >
       <Tilt max={5} className="group rounded-2xl">
         <div
@@ -52,7 +52,10 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
             <motion.h3 layoutId={`title-${project.id}`} className="font-display text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.88] tracking-wide text-bone">
               {project.title}
             </motion.h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-bone/80 sm:text-[15px]">{project.caseStudy.outcome}</p>
+            <p className="mt-3 max-w-md text-sm font-semibold leading-relaxed text-signal-2 sm:text-[15px]">
+              {project.caseStudy.proof}
+            </p>
+            <p className="mt-1.5 max-w-md text-sm leading-relaxed text-bone/75 sm:text-[14px]">{project.caseStudy.outcome}</p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {project.stack.slice(0, 4).map((t) => (
                 <span key={t} className="rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-bone/90 backdrop-blur">

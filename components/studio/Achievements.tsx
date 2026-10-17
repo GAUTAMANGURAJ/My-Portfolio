@@ -62,7 +62,7 @@ export default function Achievements() {
           <p className="text-xs text-smoke">{issuers.join(' · ')}</p>
         </div>
         <div className="group/rail relative">
-          <div ref={rail} className="rail gutter flex snap-x gap-3 overflow-x-auto py-5">
+          <div ref={rail} data-lenis-prevent className="rail gutter flex gap-3 overflow-x-auto py-5">
             {certifications.map((c, i) => (
               <motion.div
                 key={c.name}

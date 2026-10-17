@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Newsreader, Syne } from 'next/font/google';
 import Analytics from '@/components/studio/Analytics';
 
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 1200,
-        height: 630,
+        width: 819,
+        height: 905,
         alt: 'Portrait of Gautam M A, software engineer',
       },
     ],
@@ -75,12 +75,30 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  themeColor: '#060910',
 };
+
+export const viewport: Viewport = {
+  themeColor: '#060910',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
+};
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '/gautam-m-a-portfolio';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="interface" className={`${dmSans.variable} ${syne.variable} ${newsreader.variable}`}>
+      <head>
+        {/* LCP: hero portrait (responsive candidates) */}
+        <link
+          rel="preload"
+          as="image"
+          href={`${BASE}/assets/portrait-hero-640.jpg`}
+          imageSrcSet={`${BASE}/assets/portrait-hero-480.jpg 480w, ${BASE}/assets/portrait-hero-640.jpg 640w, ${BASE}/assets/portrait-hero.jpg 819w`}
+          imageSizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 54vw"
+        />
+      </head>
       <body className="bg-ink font-sans text-bone antialiased">
         {children}
         <Analytics />
